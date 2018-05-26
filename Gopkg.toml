@@ -1,3 +1,7 @@
+[metadata.heroku]
+  root-package = "github.com/credit-portfolio/main"
+  insall = ["./cmd/..."]
+
 [[constraint]]
   name = "github.com/gin-gonic/gin"
   version = "1.2.0"
