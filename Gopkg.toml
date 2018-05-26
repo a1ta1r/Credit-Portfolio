@@ -1,5 +1,6 @@
 [metadata.heroku]
   root-package = "github.com/credit-portfolio"
+  ensure = "false"
 
 [[constraint]]
   name = "github.com/gin-gonic/gin"
