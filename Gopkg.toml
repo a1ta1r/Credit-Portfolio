@@ -1,5 +1,5 @@
 [metadata.heroku]
-  root-package = "github.com/credit-portfolio"
+  root-package = "github.com/a1ta1r/credit-portfolio/"
   ensure = "false"
 
 [[constraint]]
