@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/credit-portfolio/internal/controllers"
+	"github.com/a1ta1r/credit-portfolio/internal/controllers"
 	"github.com/gin-gonic/gin"
 )
 
