@@ -1,6 +1,6 @@
 [metadata.heroku]
   root-package = "github.com/credit-portfolio/main"
-  insall = ["./cmd/..."]
+  insall = ["./..."]
 
 [[constraint]]
   name = "github.com/gin-gonic/gin"
