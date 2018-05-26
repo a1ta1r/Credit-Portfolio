@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/credit-portfolio/internal/controllers"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
