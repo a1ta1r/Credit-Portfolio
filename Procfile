@@ -1,1 +1,1 @@
-web: credit-portfolio
+web: go run cmd/main.go
