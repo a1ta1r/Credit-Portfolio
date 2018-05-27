@@ -1,6 +1,5 @@
 [metadata.heroku]
   root-package = "github.com/a1ta1r/credit-portfolio"
-  ensure = "false"
   install = "./..."
 
 [[constraint]]
