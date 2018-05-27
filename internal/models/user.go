@@ -1,7 +1,7 @@
 package models
 
 type User struct {
-	name string
+	name  string
 	email string
-	loans []Loan
+	loans []PaymentPlan
 }

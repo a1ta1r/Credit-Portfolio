@@ -20,8 +20,10 @@ func main() {
 		panic(err)
 	}
 	healthController := controllers.NewHealthController(db)
+	calculatorController := controllers.NewCalculatorController()
 
 	r := gin.Default()
 	r.GET("/health", healthController.HealthCheck)
+	r.POST("/calculator", calculatorController.Calculate)
 	r.Run()
 }
