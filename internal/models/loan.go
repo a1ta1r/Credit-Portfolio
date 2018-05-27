@@ -1,7 +1,10 @@
 package models
 
-const differentiated = "differentiated"
-const even = "even"
+
+const (
+	differentiated = "differentiated"
+	even = "even"
+)
 
 type Loan struct {
 	loanType string
