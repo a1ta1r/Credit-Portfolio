@@ -25,6 +25,7 @@ func main() {
 
 	r.GET("/health", healthController.HealthCheck)
 
+	r.GET("/user", userController.GetUsers)
 	r.GET("/user/:id", userController.GetUser)
 	r.POST("/user", userController.AddUser)
 	r.DELETE("/user/:id", userController.DeleteUser)

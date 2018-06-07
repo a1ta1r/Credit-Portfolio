@@ -13,6 +13,12 @@ type UserController struct {
 	gormDB gorm.DB
 }
 
+func (uc UserController) GetUsers(c *gin.Context) {
+	var users []models.User
+	uc.gormDB.Find(&users)
+	c.JSON(http.StatusOK, gin.H{"users": users})
+}
+
 func (uc UserController) GetUser(c *gin.Context) {
 	var user models.User
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
