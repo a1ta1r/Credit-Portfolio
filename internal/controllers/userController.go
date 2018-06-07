@@ -15,8 +15,21 @@ type UserController struct {
 
 func (uc UserController) GetUsers(c *gin.Context) {
 	var users []models.User
-	uc.gormDB.Find(&users)
-	c.JSON(http.StatusOK, gin.H{"users": users})
+	limit, offset := int64(-1), int64(0)
+	reqLimit, _ := strconv.ParseInt(c.Query("limit"), 10, 32)
+	reqOffset, _ := strconv.ParseInt(c.Query("offset"), 10, 32)
+	if reqLimit > 0 {
+		limit = reqLimit
+	}
+	if reqOffset > 0 {
+		offset = reqOffset
+	}
+	uc.gormDB.Offset(offset).Limit(limit).Find(&users)
+	c.JSON(http.StatusOK, gin.H{
+		"limit":  limit,
+		"offset": offset,
+		"users":  users,
+	})
 }
 
 func (uc UserController) GetUser(c *gin.Context) {
