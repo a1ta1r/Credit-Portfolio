@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/app"
 	"github.com/a1ta1r/Credit-Portfolio/internal/controllers"
+	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
 	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,9 @@ func main() {
 	userController := controllers.NewUserController(db)
 	commonController := controllers.NewCommonController(db)
 
-	r := gin.Default()
+	r := gin.New()
+	r.Use(handlers.PanicHandler)
+	r.Use(gin.Logger())
 
 	r.GET("/health", healthController.HealthCheck)
 
