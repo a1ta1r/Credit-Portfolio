@@ -7,6 +7,6 @@ type User struct {
 	Login        string
 	Password     string
 	Role         Role
-	RoleID       uint
+	RoleID       uint `json:"role_id"`
 	PaymentPlans []PaymentPlan
 }
