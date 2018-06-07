@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"github.com/jinzhu/gorm"
+	"net/http"
 )
 
 type HealthController struct {
@@ -17,12 +17,11 @@ func (hc HealthController) HealthCheck(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, gin.H{
 			"message": "Internal error occurred",
 		})
-		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "I am alive!",
+		})
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "I am alive!",
-	})
 }
 
 func NewHealthController(db *gorm.DB) HealthController {

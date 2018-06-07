@@ -1,7 +1,12 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type User struct {
-	name  string
-	email string
-	loans []PaymentPlan
+	gorm.Model
+	Login        string
+	Password     string
+	Role         Role
+	RoleID       uint
+	PaymentPlans []PaymentPlan
 }

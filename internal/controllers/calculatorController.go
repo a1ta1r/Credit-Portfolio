@@ -2,21 +2,20 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"net/http"
-	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 )
 
 type CalculatorController struct {
-	calculatorService services.Calculator
+	gormDB gorm.DB
 }
 
 func (cc CalculatorController) Calculate(c *gin.Context) {
-	paymentPlan := cc.calculatorService.Calculate()
 	c.JSON(http.StatusOK, gin.H{
-		"payment_plan": paymentPlan,
+		"message": "hello world",
 	})
 }
 
-func NewCalculatorController() CalculatorController {
-	return CalculatorController{services.Calculator{}}
+func NewCalculatorController(pg *gorm.DB) CalculatorController {
+	return CalculatorController{gormDB: *pg}
 }
