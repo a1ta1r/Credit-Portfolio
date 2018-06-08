@@ -21,6 +21,7 @@ func main() {
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)
 	commonController := controllers.NewCommonController(db)
+	paymentPlanController := controllers.NewPaymentPlanController(db)
 
 	r := gin.New()
 	r.Use(handlers.PanicHandler)
@@ -44,6 +45,11 @@ func main() {
 
 	r.GET("/paymentType/:id", commonController.GetPaymentType)
 	r.POST("/paymentType", commonController.AddPaymentType)
+
+	r.GET("/plan", paymentPlanController.GetPaymentPlans)
+	r.GET("/plan/:id", paymentPlanController.GetPaymentPlan)
+	r.POST("/plan", paymentPlanController.AddPaymentPlan)
+	r.DELETE("/plan/:id", paymentPlanController.DeletePaymentPlan)
 
 	r.NoRoute(controllers.NotFound)
 
