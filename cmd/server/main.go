@@ -18,6 +18,7 @@ func main() {
 	if err != nil {
 		panic(utils.ConnectionError)
 	}
+
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)
 	commonController := controllers.NewCommonController(db)
