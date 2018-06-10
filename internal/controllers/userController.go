@@ -15,16 +15,9 @@ type UserController struct {
 
 func (uc UserController) GetUsers(c *gin.Context) {
 	var users []models.User
-	limit, offset := int64(-1), int64(0)
-	reqLimit, _ := strconv.ParseInt(c.Query("limit"), 10, 32)
-	reqOffset, _ := strconv.ParseInt(c.Query("offset"), 10, 32)
-	if reqLimit > 0 {
-		limit = reqLimit
-	}
-	if reqOffset > 0 {
-		offset = reqOffset
-	}
-	uc.gormDB.Offset(offset).Limit(limit).Find(&users)
+	var  limit int64
+	var  offset int64
+	users, limit, offset = uc.GetUsersArray(c)
 	c.JSON(http.StatusOK, gin.H{
 		"limit":  limit,
 		"offset": offset,
@@ -64,4 +57,19 @@ func (uc UserController) DeleteUser(c *gin.Context) {
 
 func NewUserController(pg *gorm.DB) UserController {
 	return UserController{gormDB: *pg}
+}
+
+func (uc UserController) GetUsersArray (c *gin.Context) ([]models.User, int64, int64) {
+	var users []models.User
+	limit, offset := int64(-1), int64(0)
+	reqLimit, _ := strconv.ParseInt(c.Query("limit"), 10, 32)
+	reqOffset, _ := strconv.ParseInt(c.Query("offset"), 10, 32)
+	if reqLimit > 0 {
+		limit = reqLimit
+	}
+	if reqOffset > 0 {
+		offset = reqOffset
+	}
+	uc.gormDB.Offset(offset).Limit(limit).Find(&users)
+	return users, limit, offset
 }

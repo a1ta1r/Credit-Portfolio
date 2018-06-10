@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 	"gopkg.in/appleboy/gin-jwt.v2"
 	"time"
+	"github.com/A1ta1r/Credit-Portfolio/internal/models"
 )
 
 func main() {
@@ -36,7 +37,16 @@ func main() {
 		Key:           []byte("portfolio-on-credit-very-very-very-secret-key"),
 		Timeout:       time.Hour,
 		MaxRefresh:    time.Hour * 24,
-		Authenticator: handlers.Authenticate,
+		Authenticator: func (login string, password string, c *gin.Context) (string, bool) {
+			var users []models.User
+			users, _, _ = userController.GetUsersArray(c)
+			for i := 0; i < len(users); i++ {
+				if login == users[i].Login && password == users[i].Password {
+				return login, true
+				}
+			}
+		return "", false
+		},
 		PayloadFunc:  handlers.Payload,
 	}
 
