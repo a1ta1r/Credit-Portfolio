@@ -1,13 +1,15 @@
 package main
 
 import (
-	"github.com/a1ta1r/Credit-Portfolio/internal/app"
-	"github.com/a1ta1r/Credit-Portfolio/internal/controllers"
-	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
-	"github.com/a1ta1r/Credit-Portfolio/internal/services"
-	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
+	"github.com/A1ta1r/Credit-Portfolio/internal/app"
+	"github.com/A1ta1r/Credit-Portfolio/internal/controllers"
+	"github.com/A1ta1r/Credit-Portfolio/internal/handlers"
+	"github.com/A1ta1r/Credit-Portfolio/internal/services"
+	"github.com/A1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"gopkg.in/appleboy/gin-jwt.v2"
+	"time"
 )
 
 func main() {
@@ -23,35 +25,56 @@ func main() {
 	commonController := controllers.NewCommonController(db)
 	paymentPlanController := controllers.NewPaymentPlanController(db)
 
-	r := gin.New()
-	r.Use(handlers.PanicHandler)
-	r.Use(gin.Logger())
+	router := gin.New()
 
-	r.GET("/health", healthController.HealthCheck)
+	router.Use(handlers.PanicHandler)
+	router.Use(gin.Logger())
 
-	r.GET("/user", userController.GetUsers)
-	r.GET("/user/:id", userController.GetUser)
-	r.POST("/user", userController.AddUser)
-	r.DELETE("/user/:id", userController.DeleteUser)
+	jwtMiddleware := &jwt.GinJWTMiddleware{
+		Realm:         "robreid.io",
+		Key:           []byte("portfolio-on-credit-very-very-very-secret-key"),
+		Timeout:       time.Hour,
+		MaxRefresh:    time.Hour * 24,
+		Authenticator: handlers.Authenticate,
+		PayloadFunc:  handlers.Payload,
+	}
 
-	r.GET("/bank/:id", commonController.GetBank)
-	r.POST("/bank", commonController.AddBank)
+	secureJWTGroup := router.Group("/")
 
-	r.GET("/currency/:id", commonController.GetCurrency)
-	r.POST("/currency", commonController.AddCurrency)
+	secureJWTGroup.Use(jwtMiddleware.MiddlewareFunc())
+	{
+		//secureJWTGroup.GET("/user", userController.GetUsers)
+		secureJWTGroup.GET("/refreshToken", jwtMiddleware.RefreshHandler)
+		secureJWTGroup.GET("/health", healthController.HealthCheck)
 
-	r.GET("/role/:id", commonController.GetRole)
-	r.POST("/role", commonController.AddRole)
+		secureJWTGroup.GET("/user", userController.GetUsers)
+		secureJWTGroup.GET("/user/:id", userController.GetUser)
+		secureJWTGroup.POST("/user", userController.AddUser)
+		secureJWTGroup.DELETE("/user/:id", userController.DeleteUser)
 
-	r.GET("/paymentType/:id", commonController.GetPaymentType)
-	r.POST("/paymentType", commonController.AddPaymentType)
+		secureJWTGroup.GET("/hello", handlers.Hello)
 
-	r.GET("/plan", paymentPlanController.GetPaymentPlans)
-	r.GET("/plan/:id", paymentPlanController.GetPaymentPlan)
-	r.POST("/plan", paymentPlanController.AddPaymentPlan)
-	r.DELETE("/plan/:id", paymentPlanController.DeletePaymentPlan)
+		secureJWTGroup.GET("/bank/:id", commonController.GetBank)
+		secureJWTGroup.POST("/bank", commonController.AddBank)
 
-	r.NoRoute(controllers.NotFound)
+		secureJWTGroup.GET("/currency/:id", commonController.GetCurrency)
+		secureJWTGroup.POST("/currency", commonController.AddCurrency)
 
-	r.Run()
+		secureJWTGroup.GET("/role/:id", commonController.GetRole)
+		secureJWTGroup.POST("/role", commonController.AddRole)
+
+		secureJWTGroup.GET("/paymentType/:id", commonController.GetPaymentType)
+		secureJWTGroup.POST("/paymentType", commonController.AddPaymentType)
+
+		secureJWTGroup.GET("/plan", paymentPlanController.GetPaymentPlans)
+		secureJWTGroup.GET("/plan/:id", paymentPlanController.GetPaymentPlan)
+		secureJWTGroup.POST("/plan", paymentPlanController.AddPaymentPlan)
+		secureJWTGroup.DELETE("/plan/:id", paymentPlanController.DeletePaymentPlan)
+	}
+
+	router.POST("/login", jwtMiddleware.LoginHandler)
+
+	router.NoRoute(controllers.NotFound)
+
+	router.Run()
 }
