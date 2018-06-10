@@ -3,7 +3,7 @@ package handlers
 import (
 	"bytes"
 	"fmt"
-	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
+	"github.com/A1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"log"

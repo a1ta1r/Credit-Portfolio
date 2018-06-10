@@ -3,6 +3,19 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/a1ta1r/Credit-Portfolio"
+  packages = [
+    "internal/app",
+    "internal/controllers",
+    "internal/handlers",
+    "internal/models",
+    "internal/services",
+    "internal/utils"
+  ]
+  revision = "d0a01ee33419c165f17427b60d34393b40e9280f"
+
+[[projects]]
+  branch = "master"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
   revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
@@ -76,6 +89,18 @@
   revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
 
 [[projects]]
+  name = "gopkg.in/appleboy/gin-jwt.v2"
+  packages = ["."]
+  revision = "f7347d7c16fc8297bf5b7215b9e4847a5ca05d90"
+  version = "v2.3.1"
+
+[[projects]]
+  name = "gopkg.in/dgrijalva/jwt-go.v3"
+  packages = ["."]
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   name = "gopkg.in/go-playground/validator.v8"
   packages = ["."]
   revision = "5f57d2222ad794d0dffb07e664ea05e2ee07d60c"
@@ -89,6 +114,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9b2ef998a007cba6b0d1e8d94ad0ef97668c0b5fde2dc203835f9fb73614eb32"
+  inputs-digest = "20c2f53d7257d7fb29d93fce439fe754d58ae959318802cfcc09485d07879247"
   solver-name = "gps-cdcl"
   solver-version = 1
