@@ -2,10 +2,13 @@ package models
 
 import "time"
 
-type Role struct {
+type Income struct {
 	ID        uint       `gorm:"primary_key" json:"id"`
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
 	DeletedAt *time.Time `sql:"index" json:"-"`
-	Name      string     `json:"name" gorm:"type:varchar(100);unique_index"`
+	User      User       `json:"-"`
+	UserID    uint       `json:"user_id"`
+	Reason    string     `json:"reason"`
+	Amount    float64    `json:"amount"`
 }

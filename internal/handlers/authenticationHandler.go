@@ -8,7 +8,7 @@ import (
 
 func Hello(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
-	c.String(http.StatusOK, "id: %s\nrole: %s", claims["id"], claims["role"])
+	c.JSON(http.StatusOK, gin.H{"id": claims["id"], "role": claims["role"]})
 }
 
 func Payload(email string) map[string]interface{} {

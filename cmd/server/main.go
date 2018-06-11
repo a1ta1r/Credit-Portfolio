@@ -7,10 +7,8 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
-	"gopkg.in/appleboy/gin-jwt.v2"
-	"time"
-	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 )
 
 func main() {
@@ -22,6 +20,18 @@ func main() {
 		panic(utils.ConnectionError)
 	}
 
+	//db.AutoMigrate(
+	//	&models.Bank{},
+	//	&models.Currency{},
+	//	&models.PaymentType{},
+	//	&models.Role{},
+	//	&models.User{},
+	//	&models.PaymentPlan{},
+	//	&models.Payment{},
+	//	&models.Income{},
+	//	&models.Expense{},
+	//)
+
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)
 	commonController := controllers.NewCommonController(db)
@@ -31,24 +41,10 @@ func main() {
 
 	router.Use(handlers.PanicHandler)
 	router.Use(gin.Logger())
+	router.Use(cors.Default())
 
-	jwtMiddleware := &jwt.GinJWTMiddleware{
-		Realm:         "robreid.io",
-		Key:           []byte("portfolio-on-credit-very-very-very-secret-key"),
-		Timeout:       time.Hour,
-		MaxRefresh:    time.Hour * 24,
-		Authenticator: func (login string, password string, c *gin.Context) (string, bool) {
-			var users []models.User
-			users, _, _ = userController.GetUsersArray(c)
-			for i := 0; i < len(users); i++ {
-				if login == users[i].Login && password == users[i].Password {
-				return login, true
-				}
-			}
-		return "", false
-		},
-		PayloadFunc:  handlers.Payload,
-	}
+	jwtWrapper := app.NewJwtWrapper(userController)
+	jwtMiddleware := jwtWrapper.GetJwtMiddleware()
 
 	secureJWTGroup := router.Group("/")
 
@@ -84,6 +80,7 @@ func main() {
 	}
 
 	router.POST("/login", jwtMiddleware.LoginHandler)
+	router.POST("/signup", userController.AddUserAnonymous)
 
 	router.NoRoute(controllers.NotFound)
 

@@ -2,17 +2,10 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/a1ta1r/Credit-Portfolio"
-  packages = [
-    "internal/app",
-    "internal/controllers",
-    "internal/handlers",
-    "internal/models",
-    "internal/services",
-    "internal/utils"
-  ]
-  revision = "d0a01ee33419c165f17427b60d34393b40e9280f"
+  name = "github.com/gin-contrib/cors"
+  packages = ["."]
+  revision = "cf4846e6a636a76237a28d9286f163c132e841bc"
+  version = "v1.2"
 
 [[projects]]
   branch = "master"
@@ -114,6 +107,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "20c2f53d7257d7fb29d93fce439fe754d58ae959318802cfcc09485d07879247"
+  inputs-digest = "d04327d7a79454cfe7b77656a7fa71303bf394af84b71df9663029a84e02c634"
   solver-name = "gps-cdcl"
   solver-version = 1
