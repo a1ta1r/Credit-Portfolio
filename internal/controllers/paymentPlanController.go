@@ -3,10 +3,10 @@ package controllers
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/gin-gonic/gin"
-	"github.com/A1ta1r/Credit-Portfolio/internal/models"
+	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"strconv"
 	"net/http"
-	"github.com/A1ta1r/Credit-Portfolio/internal/utils"
+	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 )
 
 type PaymentPlanController struct {

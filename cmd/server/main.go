@@ -1,16 +1,16 @@
 package main
 
 import (
-	"github.com/A1ta1r/Credit-Portfolio/internal/app"
-	"github.com/A1ta1r/Credit-Portfolio/internal/controllers"
-	"github.com/A1ta1r/Credit-Portfolio/internal/handlers"
-	"github.com/A1ta1r/Credit-Portfolio/internal/services"
-	"github.com/A1ta1r/Credit-Portfolio/internal/utils"
+	"github.com/a1ta1r/Credit-Portfolio/internal/app"
+	"github.com/a1ta1r/Credit-Portfolio/internal/controllers"
+	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
+	"github.com/a1ta1r/Credit-Portfolio/internal/services"
+	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gopkg.in/appleboy/gin-jwt.v2"
 	"time"
-	"github.com/A1ta1r/Credit-Portfolio/internal/models"
+	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 )
 
 func main() {
