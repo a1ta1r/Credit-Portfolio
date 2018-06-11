@@ -59,8 +59,6 @@ func main() {
 		secureJWTGroup.POST("/user", userController.AddUser)
 		secureJWTGroup.DELETE("/user/:id", userController.DeleteUser)
 
-		secureJWTGroup.GET("/hello", handlers.Hello)
-
 		secureJWTGroup.GET("/bank/:id", commonController.GetBank)
 		secureJWTGroup.POST("/bank", commonController.AddBank)
 
@@ -79,7 +77,7 @@ func main() {
 		secureJWTGroup.DELETE("/plan/:id", paymentPlanController.DeletePaymentPlan)
 	}
 
-	router.POST("/login", jwtMiddleware.LoginHandler)
+	router.POST("/signin", jwtMiddleware.LoginHandler)
 	router.POST("/signup", userController.AddUserAnonymous)
 
 	router.NoRoute(controllers.NotFound)
