@@ -28,21 +28,21 @@ func (cc CommonController) AddCurrency(c *gin.Context) {
 	var currency models.Currency
 	c.BindJSON(&currency)
 	cc.db.Create(&currency)
-	c.JSON(http.StatusCreated, gin.H{"currency": currency})
+	c.JSON(http.StatusCreated, currency)
 }
 
 func (cc CommonController) AddBank(c *gin.Context) {
 	var bank models.Bank
 	c.BindJSON(&bank)
 	cc.db.Create(&bank)
-	c.JSON(http.StatusCreated, gin.H{"bank": bank})
+	c.JSON(http.StatusCreated, bank)
 }
 
 func (cc CommonController) AddPaymentType(c *gin.Context) {
 	var paymentType models.PaymentType
 	c.BindJSON(&paymentType)
 	cc.db.Create(&paymentType)
-	c.JSON(http.StatusCreated, gin.H{"paymentType": paymentType})
+	c.JSON(http.StatusCreated, paymentType)
 }
 
 func (cc CommonController) GetRole(c *gin.Context) {
@@ -58,7 +58,7 @@ func (cc CommonController) GetRole(c *gin.Context) {
 		return
 	}
 	cc.db.First(&role, id)
-	c.JSON(http.StatusOK, gin.H{"role": role})
+	c.JSON(http.StatusOK, role)
 }
 
 func (cc CommonController) GetCurrency(c *gin.Context) {

@@ -8,16 +8,18 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 )
 
 func main() {
 	godotenv.Load()
-	app.LoadConfig()
 
 	db, err := services.GetConnection()
 	if err != nil {
 		panic(utils.ConnectionError)
 	}
+
+	db.AutoMigrate(&models.User{})
 
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)
@@ -42,9 +44,12 @@ func main() {
 		secureJWTGroup.GET("/health", healthController.HealthCheck)
 
 		secureJWTGroup.GET("/user", userController.GetUsers)
-		secureJWTGroup.GET("/user/:id", userController.GetUser)
+		secureJWTGroup.GET("/user/name/:username", userController.GetUserByName)
+		secureJWTGroup.POST("/user/update", userController.UpdateUser)
+		//secureJWTGroup.GET("/user/:id", userController.GetUser)
 		secureJWTGroup.POST("/user", userController.AddUser)
 		secureJWTGroup.DELETE("/user/:id", userController.DeleteUser)
+		secureJWTGroup.GET("auth/:token")
 
 		secureJWTGroup.GET("/bank/:id", commonController.GetBank)
 		secureJWTGroup.POST("/bank", commonController.AddBank)

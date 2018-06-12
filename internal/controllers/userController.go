@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"golang.org/x/crypto/bcrypt"
 	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"
 )
@@ -23,6 +23,15 @@ func (uc UserController) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func (uc UserController) GetUserByName(c *gin.Context) {
+	var user = uc.GetUserByUsername(c)
+	if user.ID == 0 {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": utils.ResNotFound})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
 func (uc UserController) GetUsers(c *gin.Context) {
 	var users []models.User
 	users, _, _ = uc.GetUsersArray(c)
@@ -32,11 +41,18 @@ func (uc UserController) GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+func (uc UserController) UpdateUser(c *gin.Context) {
+	var user models.User
+	c.BindJSON(&user)
+	uc.gormDB.Save(&user)
+	c.JSON(http.StatusOK, user)
+}
+
 func (uc UserController) AddUser(c *gin.Context) {
 	var user models.User
 	c.BindJSON(&user)
 	uc.gormDB.Create(&user)
-	c.JSON(http.StatusCreated, gin.H{"user": user})
+	c.JSON(http.StatusCreated, user)
 }
 
 func (uc UserController) AddUserAnonymous(c *gin.Context) {
@@ -44,8 +60,11 @@ func (uc UserController) AddUserAnonymous(c *gin.Context) {
 	c.BindJSON(&user)
 	user.RoleID = 1 //user
 	user.Password = getPasswordHash(user.Password)
-	uc.gormDB.Create(&user)
-	c.JSON(http.StatusCreated, gin.H{"user": user})
+	if err := uc.gormDB.Create(&user).Error; err != nil {
+		c.JSON(http.StatusBadRequest, user)
+		return
+	}
+	c.JSON(http.StatusCreated, user)
 }
 
 func (uc UserController) DeleteUser(c *gin.Context) {
@@ -75,7 +94,7 @@ func (uc UserController) GetUsersArray(c *gin.Context) ([]models.User, int64, in
 	return users, limit, offset
 }
 
-func (uc UserController) GetUserEntityByGinContext(c *gin.Context) models.User {
+func (uc UserController) GetUserEntityByGinContext(c *gin.Context) (models.User) {
 	var user models.User
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -91,7 +110,23 @@ func (uc UserController) GetUserEntityByGinContext(c *gin.Context) models.User {
 	return user
 }
 
-func (uc UserController) GetUserById(userId string) models.User {
+func (uc UserController) GetUserByUsername(c *gin.Context) (models.User) {
+	var user models.User
+	username := c.Param("username")
+	uc.gormDB.
+		Preload("Role").
+		Preload("PaymentPlans").
+		Preload("Expenses").
+		Preload("Incomes").
+		Table("users").Where("username = ?", username).First(&user)
+	if user.ID == 0 {
+		return models.User{}
+	}
+	user.Password = ""
+	return user
+}
+
+func (uc UserController) GetUserById(userId string) (models.User) {
 	var user models.User
 	id, _ := strconv.ParseUint(userId, 10, 32)
 	uc.gormDB.First(&user, id)

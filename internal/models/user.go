@@ -10,7 +10,9 @@ type User struct {
 	Username     string        `json:"username" gorm:"type:varchar(100);unique_index"`
 	Email        string        `json:"email" gorm:"type:varchar(100);unique_index"`
 	Password     string        `json:"password,omitempty"`
-	Role         Role          `json:"-"`
+	Role         Role          `json:"role"`
 	RoleID       uint          `json:"roleId"`
 	PaymentPlans []PaymentPlan `json:"paymentPlans"`
+	Incomes      []Income      `json:"incomes"`
+	Expenses     []Expense     `json:"expenses"`
 }
