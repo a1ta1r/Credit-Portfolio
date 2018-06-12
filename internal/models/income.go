@@ -8,7 +8,7 @@ type Income struct {
 	UpdatedAt time.Time  `json:"-"`
 	DeletedAt *time.Time `sql:"index" json:"-"`
 	User      User       `json:"-"`
-	UserID    uint       `json:"user_id"`
+	UserID    uint       `json:"userId"`
 	Reason    string     `json:"reason"`
 	Amount    float64    `json:"amount"`
 }

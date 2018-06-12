@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"
 )
@@ -20,22 +20,16 @@ func NewUserController(pg *gorm.DB) UserController {
 
 func (uc UserController) GetUser(c *gin.Context) {
 	var user = uc.GetUserEntityByGinContext(c)
-	c.JSON(http.StatusOK, gin.H{"user": user})
+	c.JSON(http.StatusOK, user)
 }
 
 func (uc UserController) GetUsers(c *gin.Context) {
 	var users []models.User
-	var limit int64
-	var offset int64
-	users, limit, offset = uc.GetUsersArray(c)
+	users, _, _ = uc.GetUsersArray(c)
 	for i := 0; i < len(users); i++ {
 		users[i].Password = ""
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"limit":  limit,
-		"offset": offset,
-		"users":  users,
-	})
+	c.JSON(http.StatusOK, users)
 }
 
 func (uc UserController) AddUser(c *gin.Context) {
@@ -46,7 +40,7 @@ func (uc UserController) AddUser(c *gin.Context) {
 }
 
 func (uc UserController) AddUserAnonymous(c *gin.Context) {
-	var user models.User
+	var user *models.User
 	c.BindJSON(&user)
 	user.RoleID = 1 //user
 	user.Password = getPasswordHash(user.Password)
@@ -81,7 +75,7 @@ func (uc UserController) GetUsersArray(c *gin.Context) ([]models.User, int64, in
 	return users, limit, offset
 }
 
-func (uc UserController) GetUserEntityByGinContext(c *gin.Context) (models.User) {
+func (uc UserController) GetUserEntityByGinContext(c *gin.Context) models.User {
 	var user models.User
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -97,7 +91,7 @@ func (uc UserController) GetUserEntityByGinContext(c *gin.Context) (models.User)
 	return user
 }
 
-func (uc UserController) GetUserById(userId string) (models.User) {
+func (uc UserController) GetUserById(userId string) models.User {
 	var user models.User
 	id, _ := strconv.ParseUint(userId, 10, 32)
 	uc.gormDB.First(&user, id)

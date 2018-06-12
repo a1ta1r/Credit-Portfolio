@@ -11,6 +11,6 @@ type User struct {
 	Email        string        `json:"email" gorm:"type:varchar(100);unique_index"`
 	Password     string        `json:"password,omitempty"`
 	Role         Role          `json:"-"`
-	RoleID       uint          `json:"role_id"`
-	PaymentPlans []PaymentPlan `json:"payment_plans"`
+	RoleID       uint          `json:"roleId"`
+	PaymentPlans []PaymentPlan `json:"paymentPlans"`
 }

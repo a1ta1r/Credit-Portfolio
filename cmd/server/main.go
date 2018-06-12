@@ -7,7 +7,6 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -20,18 +19,6 @@ func main() {
 		panic(utils.ConnectionError)
 	}
 
-	//db.AutoMigrate(
-	//	&models.Bank{},
-	//	&models.Currency{},
-	//	&models.PaymentType{},
-	//	&models.Role{},
-	//	&models.User{},
-	//	&models.PaymentPlan{},
-	//	&models.Payment{},
-	//	&models.Income{},
-	//	&models.Expense{},
-	//)
-
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)
 	commonController := controllers.NewCommonController(db)
@@ -41,7 +28,7 @@ func main() {
 
 	router.Use(handlers.PanicHandler)
 	router.Use(gin.Logger())
-	router.Use(cors.Default())
+	router.Use(handlers.CorsHandler())
 
 	jwtWrapper := app.NewJwtWrapper(userController)
 	jwtMiddleware := jwtWrapper.GetJwtMiddleware()

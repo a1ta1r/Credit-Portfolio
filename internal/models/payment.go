@@ -10,7 +10,7 @@ type Payment struct {
 	UpdatedAt     time.Time   `json:"-"`
 	DeletedAt     *time.Time  `sql:"index" json:"-"`
 	PaymentPlan   PaymentPlan `json:"-"`
-	PaymentPlanID uint        `json:"payment_plan_id"`
-	PaymentDate   time.Time   `json:"payment_date"`
-	PaymentAmount float64     `json:"payment_amount"`
+	PaymentPlanID uint        `json:"paymentPlanId"`
+	PaymentDate   time.Time   `json:"paymentDate"`
+	PaymentAmount float64     `json:"paymentAmount"`
 }

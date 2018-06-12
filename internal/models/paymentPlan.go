@@ -11,16 +11,16 @@ type PaymentPlan struct {
 	DeletedAt     *time.Time  `sql:"index" json:"-"`
 	Title         string      `json:"title"`
 	User          User        `json:"-"`
-	UserID        uint        `json:"user_id"`
+	UserID        uint        `json:"userId"`
 	Bank          Bank        `json:"-"`
-	BankID        uint        `json:"bank_id"`
+	BankID        uint        `json:"bankId"`
 	Currency      Currency    `json:"-"`
-	CurrencyID    uint        `json:"currency_id"`
+	CurrencyID    uint        `json:"currencyId"`
 	PaymentType   PaymentType `json:"-"`
-	PaymentTypeID uint        `json:"payment_type_id"`
-	Amount        float64     `json:"payment_amount"`
-	InterestRate  float64     `json:"interest_rate"`
-	Months        uint        `json:"number_of_months"`
-	StartDate     time.Time   `json:"start_date"`
+	PaymentTypeID uint        `json:"paymentTypeId"`
+	Amount        float64     `json:"paymentAmount"`
+	InterestRate  float64     `json:"interestRate"`
+	Months        uint        `json:"numberOfMonths"`
+	StartDate     time.Time   `json:"startDate"`
 	Payments      []Payment   `json:"payments"`
 }
