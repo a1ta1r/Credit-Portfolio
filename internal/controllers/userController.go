@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"net/http"
 	"strconv"
+	"gopkg.in/appleboy/gin-jwt.v2"
 )
 
 type UserController struct {
@@ -16,11 +17,6 @@ type UserController struct {
 
 func NewUserController(pg *gorm.DB) UserController {
 	return UserController{gormDB: *pg}
-}
-
-func (uc UserController) GetUser(c *gin.Context) {
-	var user = uc.GetUserEntityByGinContext(c)
-	c.JSON(http.StatusOK, user)
 }
 
 func (uc UserController) GetUserByName(c *gin.Context) {
@@ -99,7 +95,7 @@ func (uc UserController) GetUsersArray(c *gin.Context) ([]models.User, int64, in
 	return users, limit, offset
 }
 
-func (uc UserController) GetUserEntityByGinContext(c *gin.Context) (models.User) {
+func (uc UserController) GetUserModelByGinContext(c *gin.Context) (models.User) {
 	var user models.User
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -131,14 +127,13 @@ func (uc UserController) GetUserByUsername(c *gin.Context) (models.User) {
 	return user
 }
 
-func (uc UserController) GetUserById(userId string) (models.User) {
-	var user models.User
-	id, _ := strconv.ParseUint(userId, 10, 32)
-	uc.gormDB.First(&user, id)
-	if user.ID == 0 {
-		return models.User{}
+func (uc UserController) GetUserModelById(userId string) (*models.User) {
+	var user = uc.gormDB.First(&models.User{}, "Username = ?", userId)
+	if user.Value.(*models.User).ID == 0 {
+		return nil
 	}
-	return user
+	_ = user.Value
+	return  user.Value.(*models.User)
 }
 
 func getPasswordHash(password string) string {
@@ -167,4 +162,11 @@ func mergeUsers(init models.User, new models.User) models.User {
 		merged.Incomes = new.Incomes
 	}
 	return merged
+}
+
+func (uc UserController) GetUser(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	var user = uc.GetUserModelById(claims["id"].(string))
+	user.Password = ""
+	c.JSON(http.StatusOK, user)
 }

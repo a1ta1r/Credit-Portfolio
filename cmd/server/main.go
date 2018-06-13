@@ -43,10 +43,10 @@ func main() {
 		secureJWTGroup.GET("/refreshToken", jwtMiddleware.RefreshHandler)
 		secureJWTGroup.GET("/health", healthController.HealthCheck)
 
-		secureJWTGroup.GET("/user", userController.GetUsers)
+		secureJWTGroup.GET("/users", userController.GetUsers)
 		secureJWTGroup.GET("/user/name/:username", userController.GetUserByName)
 		secureJWTGroup.POST("/user/update", userController.UpdateUser)
-		//secureJWTGroup.GET("/user/:id", userController.GetUser)
+
 		secureJWTGroup.POST("/user", userController.AddUser)
 		secureJWTGroup.DELETE("/user/:id", userController.DeleteUser)
 		secureJWTGroup.GET("auth/:token")
@@ -67,6 +67,8 @@ func main() {
 		secureJWTGroup.GET("/plan/:id", paymentPlanController.GetPaymentPlan)
 		secureJWTGroup.POST("/plan", paymentPlanController.AddPaymentPlan)
 		secureJWTGroup.DELETE("/plan/:id", paymentPlanController.DeletePaymentPlan)
+
+		secureJWTGroup.GET("/user", userController.GetUser)
 	}
 
 	router.POST("/signin", jwtMiddleware.LoginHandler)
