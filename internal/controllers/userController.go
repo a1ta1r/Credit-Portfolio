@@ -44,13 +44,18 @@ func (uc UserController) GetUsers(c *gin.Context) {
 func (uc UserController) UpdateUser(c *gin.Context) {
 	var user models.User
 	c.BindJSON(&user)
-	uc.gormDB.Save(&user)
-	c.JSON(http.StatusOK, user)
+	var dbUser models.User
+	uc.gormDB.Find(&dbUser, user.ID)
+	merged := mergeUsers(dbUser, user)
+	uc.gormDB.Save(&merged)
+	merged.Password = ""
+	c.JSON(http.StatusOK, &merged)
 }
 
 func (uc UserController) AddUser(c *gin.Context) {
 	var user models.User
 	c.BindJSON(&user)
+	user.Password = getPasswordHash(user.Password)
 	uc.gormDB.Create(&user)
 	c.JSON(http.StatusCreated, user)
 }
@@ -142,4 +147,24 @@ func getPasswordHash(password string) string {
 		panic(err)
 	}
 	return string(hashedPassword)
+}
+
+func mergeUsers(init models.User, new models.User) models.User {
+	merged := init
+	if new.Password != "" {
+		merged.Password = getPasswordHash(new.Password)
+	}
+	if new.Email != "" {
+		merged.Email = new.Email
+	}
+	if new.RoleID != 0  {
+		merged.RoleID = new.RoleID
+	}
+	if len(new.Expenses) > 0 {
+		merged.Expenses = new.Expenses
+	}
+	if len(new.Incomes) > 0 {
+		merged.Incomes = new.Incomes
+	}
+	return merged
 }
