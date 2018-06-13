@@ -47,7 +47,6 @@ func main() {
 		secureJWTGroup.GET("/user/name/:username", userController.GetUserByName)
 		secureJWTGroup.POST("/user/update", userController.UpdateUser)
 
-		secureJWTGroup.POST("/user", userController.AddUser)
 		secureJWTGroup.DELETE("/user/:id", userController.DeleteUser)
 		secureJWTGroup.GET("auth/:token")
 

@@ -41,8 +41,8 @@ func (w JwtWrapper) authenticatorFunc(username string, password string, c *gin.C
 	return "", false
 }
 
-func (w *JwtWrapper) Payload(userId string) map[string]interface{} {
-	var user = w.userController.GetUserModelById(userId)
+func (w *JwtWrapper) Payload(userLogin string) map[string]interface{} {
+	var user = w.userController.GetUserModelByLogin(userLogin)
 	return map[string]interface{}{
 		"username": user.Username,
 		"role": user.Role.Name,

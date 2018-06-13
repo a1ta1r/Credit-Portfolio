@@ -48,23 +48,18 @@ func (uc UserController) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, &merged)
 }
 
-func (uc UserController) AddUser(c *gin.Context) {
-	var user models.User
-	c.BindJSON(&user)
-	user.Password = getPasswordHash(user.Password)
-	uc.gormDB.Create(&user)
-	c.JSON(http.StatusCreated, user)
-}
-
+//TODO нельзя создать юзера, чей мейл уже юзался, даже если юзер удалён!
 func (uc UserController) AddUserAnonymous(c *gin.Context) {
 	var user *models.User
 	c.BindJSON(&user)
 	user.RoleID = 1 //user
+	var mailPassword= user.Password
 	user.Password = getPasswordHash(user.Password)
 	if err := uc.gormDB.Create(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, user)
 		return
 	}
+	mail(user.Email, user.Username, mailPassword)
 	c.JSON(http.StatusCreated, user)
 }
 
@@ -127,7 +122,7 @@ func (uc UserController) GetUserByUsername(c *gin.Context) (models.User) {
 	return user
 }
 
-func (uc UserController) GetUserModelById(userId string) (*models.User) {
+func (uc UserController) GetUserModelByLogin(userId string) (*models.User) {
 	var user = uc.gormDB.First(&models.User{}, "Username = ?", userId)
 	if user.Value.(*models.User).ID == 0 {
 		return nil
@@ -166,7 +161,7 @@ func mergeUsers(init models.User, new models.User) models.User {
 
 func (uc UserController) GetUser(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
-	var user = uc.GetUserModelById(claims["id"].(string))
+	var user = uc.GetUserModelByLogin(claims["id"].(string))
 	user.Password = ""
 	c.JSON(http.StatusOK, user)
 }
