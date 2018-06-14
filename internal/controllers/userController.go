@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"gopkg.in/appleboy/gin-jwt.v2"
+	"github.com/gin-gonic/gin/binding"
 )
 
 type UserController struct {
@@ -39,7 +40,8 @@ func (uc UserController) GetUsers(c *gin.Context) {
 
 func (uc UserController) UpdateUser(c *gin.Context) {
 	var user models.User
-	c.BindJSON(&user)
+	c.ShouldBindWith(&user, binding.JSON)
+	//c.BindJSON(&user)
 	var dbUser models.User
 	uc.gormDB.Find(&dbUser, user.ID)
 	merged := mergeUsers(dbUser, user)
