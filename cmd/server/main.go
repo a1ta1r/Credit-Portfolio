@@ -8,7 +8,6 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 )
 
 func main() {
@@ -18,8 +17,6 @@ func main() {
 	if err != nil {
 		panic(utils.ConnectionError)
 	}
-
-	db.AutoMigrate(&models.Expense{})
 
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)

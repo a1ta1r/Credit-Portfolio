@@ -8,5 +8,6 @@ const BadID = "id must be unsigned int"
 const ResNotFound = "resource not found"
 const ResDeleted = "resource was deleted successfully"
 const Forbidden = "request forbidden"
+const ResourceExists = "unique constraint does not allow to create resource"
 
 const ConnectionError = "could not connect to database"

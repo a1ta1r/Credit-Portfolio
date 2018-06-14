@@ -41,9 +41,16 @@ func (uc UserController) GetUsers(c *gin.Context) {
 func (uc UserController) UpdateUser(c *gin.Context) {
 	var user models.User
 	c.ShouldBindWith(&user, binding.JSON)
-	//c.BindJSON(&user)
 	var dbUser models.User
-	uc.gormDB.Find(&dbUser, user.ID)
+	uc.gormDB.
+		Preload("Role").
+		Preload("PaymentPlans").
+		Preload("Expenses").
+		Preload("Incomes").
+		Table("users").Where("id = ?", user.ID).First(&dbUser)
+	uc.gormDB.Model(&dbUser).Association("Incomes").Clear()
+	uc.gormDB.Model(&dbUser).Association("Expenses").Clear()
+	uc.gormDB.Model(&dbUser).Association("PaymentPlans").Clear()
 	merged := mergeUsers(dbUser, user)
 	uc.gormDB.Save(&merged)
 	merged.Password = ""
@@ -58,7 +65,7 @@ func (uc UserController) AddUserAnonymous(c *gin.Context) {
 	var mailPassword= user.Password
 	user.Password = getPasswordHash(user.Password)
 	if err := uc.gormDB.Create(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, user)
+		c.JSON(http.StatusBadRequest, gin.H{"message": utils.ResourceExists})
 		return
 	}
 	mail(user.Email, user.Username, mailPassword)
