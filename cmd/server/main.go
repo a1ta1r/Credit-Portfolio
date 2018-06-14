@@ -19,7 +19,7 @@ func main() {
 		panic(utils.ConnectionError)
 	}
 
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Expense{})
 
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)

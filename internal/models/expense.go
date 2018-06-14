@@ -11,4 +11,5 @@ type Expense struct {
 	UserID    uint       `json:"userId"`
 	Reason    string     `json:"reason"`
 	Amount    float64    `json:"amount"`
+	EndDate   time.Time  `json:"endDate"`
 }
