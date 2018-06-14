@@ -45,6 +45,6 @@ func (w *JwtWrapper) Payload(userLogin string) map[string]interface{} {
 	var user = w.userController.GetUserModelByLogin(userLogin)
 	return map[string]interface{}{
 		"username": user.Username,
-		"role": user.Role.Name,
+		"role": user.Role.ID,
 	}
 }

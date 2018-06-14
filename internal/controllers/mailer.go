@@ -91,6 +91,7 @@ func mail(reciever string, username string, password string) {
 
 	err = w.Close()
 	if err != nil {
+		log.Println("Such email does not exist!")
 		log.Panic(err)
 	}
 
