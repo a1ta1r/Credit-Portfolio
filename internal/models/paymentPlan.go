@@ -8,7 +8,6 @@ type PaymentPlan struct {
 	ID            uint        `gorm:"primary_key" json:"id"`
 	CreatedAt     time.Time   `json:"-"`
 	UpdatedAt     time.Time   `json:"-"`
-	DeletedAt     *time.Time  `sql:"index" json:"-"`
 	Title         string      `json:"title"`
 	User          User        `json:"-"`
 	UserID        uint        `json:"userId"`
