@@ -2,6 +2,21 @@
 
 
 [[projects]]
+  name = "cloud.google.com/go"
+  packages = ["civil"]
+  revision = "0fd7230b2a7505833d5f69b75cbd6c9582401479"
+  version = "v0.23.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/denisenkom/go-mssqldb"
+  packages = [
+    ".",
+    "internal/cp"
+  ]
+  revision = "30a6720f2ee35b4ba0f3660275e0b98600c35f62"
+
+[[projects]]
   name = "github.com/gin-contrib/cors"
   packages = ["."]
   revision = "cf4846e6a636a76237a28d9286f163c132e841bc"
@@ -32,7 +47,7 @@
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
-    "dialects/postgres"
+    "dialects/mssql"
   ]
   revision = "6ed508ec6a4ecb3531899a69cbc746ccf65a4166"
   version = "v1.9.1"
@@ -50,16 +65,6 @@
   version = "v1.2.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/lib/pq"
-  packages = [
-    ".",
-    "hstore",
-    "oid"
-  ]
-  revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
-
-[[projects]]
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   revision = "57fdcb988a5c543893cc61bce354a6e24ab70022"
@@ -74,7 +79,8 @@
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
-    "blowfish"
+    "blowfish",
+    "md4"
   ]
   revision = "8ac0e0d97ce45cd83d1d7243c060cb8461dda5e9"
 
@@ -110,6 +116,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "78f5bae4dc3bc4a4f5d798fbc8ce5bc571deb38ffaae20703bb957cfb02ed181"
+  inputs-digest = "36aa5a5c9b8d0a67cd7389d33f05f269774ee5045bfc51823b6374f39ebebb55"
   solver-name = "gps-cdcl"
   solver-version = 1
