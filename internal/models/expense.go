@@ -14,4 +14,5 @@ type Expense struct {
 	IsRepeatable  bool       `json:"isRepeatable"`
 	Frequency     uint       `json:"frequency"`
 	PaymentPeriod TimePeriod `json:"paymentPeriod"`
+	EndDate       time.Time  `json:"endDate"`
 }
