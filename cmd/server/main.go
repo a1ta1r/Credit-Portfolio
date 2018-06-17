@@ -4,6 +4,7 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/app"
 	"github.com/a1ta1r/Credit-Portfolio/internal/controllers"
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
+	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,19 @@ func main() {
 	if err != nil {
 		panic(utils.ConnectionError)
 	}
+
+	db.AutoMigrate(
+		&models.Bank{},
+		&models.Currency{},
+		&models.PaymentType{},
+		&models.Role{},
+		&models.TimePeriod{},
+		&models.User{},
+		&models.PaymentPlan{},
+		&models.Payment{},
+		&models.Income{},
+		&models.Expense{},
+	)
 
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)
@@ -36,9 +50,9 @@ func main() {
 
 	secureJWTGroup.Use(jwtMiddleware.MiddlewareFunc())
 	{
-		//secureJWTGroup.GET("/user", userController.GetUsers)
 		secureJWTGroup.GET("/refreshToken", jwtMiddleware.RefreshHandler)
-		secureJWTGroup.GET("/health", healthController.HealthCheck)
+
+		router.POST("/period", commonController.AddTimePeriod)
 
 		secureJWTGroup.GET("/users", userController.GetUsers)
 		secureJWTGroup.GET("/user/name/:username", userController.GetUserByName)
@@ -46,18 +60,6 @@ func main() {
 
 		secureJWTGroup.DELETE("/user/:id", userController.DeleteUser)
 		secureJWTGroup.GET("auth/:token")
-
-		secureJWTGroup.GET("/bank/:id", commonController.GetBank)
-		secureJWTGroup.POST("/bank", commonController.AddBank)
-
-		secureJWTGroup.GET("/currency/:id", commonController.GetCurrency)
-		secureJWTGroup.POST("/currency", commonController.AddCurrency)
-
-		secureJWTGroup.GET("/role/:id", commonController.GetRole)
-		secureJWTGroup.POST("/role", commonController.AddRole)
-
-		secureJWTGroup.GET("/paymentType/:id", commonController.GetPaymentType)
-		secureJWTGroup.POST("/paymentType", commonController.AddPaymentType)
 
 		secureJWTGroup.GET("/plan", paymentPlanController.GetPaymentPlans)
 		secureJWTGroup.GET("/plan/:id", paymentPlanController.GetPaymentPlan)
@@ -67,8 +69,25 @@ func main() {
 		secureJWTGroup.GET("/user", userController.GetUser)
 	}
 
+	router.GET("/health", healthController.HealthCheck)
+
 	router.POST("/signin", jwtMiddleware.LoginHandler)
 	router.POST("/signup", userController.AddUserAnonymous)
+
+	router.GET("/bank/:id", commonController.GetBank)
+	router.POST("/bank", commonController.AddBank)
+
+	router.GET("/currency/:id", commonController.GetCurrency)
+	router.POST("/currency", commonController.AddCurrency)
+
+	router.GET("/role/:id", commonController.GetRole)
+	router.POST("/role", commonController.AddRole)
+
+	router.GET("/period", commonController.GetAllTimePeriods)
+	router.GET("/period/:name", commonController.GetTimePeriod)
+
+	router.GET("/paymentType/:id", commonController.GetPaymentType)
+	router.POST("/paymentType", commonController.AddPaymentType)
 
 	router.NoRoute(controllers.NotFound)
 

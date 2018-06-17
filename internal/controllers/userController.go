@@ -1,15 +1,15 @@
 package controllers
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/appleboy/gin-jwt.v2"
 	"net/http"
 	"strconv"
-	"gopkg.in/appleboy/gin-jwt.v2"
-	"github.com/gin-gonic/gin/binding"
 )
 
 type UserController struct {
@@ -62,14 +62,15 @@ func (uc UserController) AddUserAnonymous(c *gin.Context) {
 	var user *models.User
 	c.BindJSON(&user)
 	user.RoleID = 1 //user
-	var mailPassword= user.Password
+	var mailPassword = user.Password
 	user.Password = getPasswordHash(user.Password)
 	if err := uc.gormDB.Create(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": utils.ResourceExists})
+		c.JSON(http.StatusConflict, gin.H{"message": utils.ResourceExists})
 		return
+	} else {
+		mail(user.Email, user.Username, mailPassword)
+		c.JSON(http.StatusCreated, user)
 	}
-	mail(user.Email, user.Username, mailPassword)
-	c.JSON(http.StatusCreated, user)
 }
 
 func (uc UserController) DeleteUser(c *gin.Context) {
@@ -99,7 +100,7 @@ func (uc UserController) GetUsersArray(c *gin.Context) ([]models.User, int64, in
 	return users, limit, offset
 }
 
-func (uc UserController) GetUserModelByGinContext(c *gin.Context) (models.User) {
+func (uc UserController) GetUserModelByGinContext(c *gin.Context) models.User {
 	var user models.User
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -115,7 +116,7 @@ func (uc UserController) GetUserModelByGinContext(c *gin.Context) (models.User) 
 	return user
 }
 
-func (uc UserController) GetUserByUsername(c *gin.Context) (models.User) {
+func (uc UserController) GetUserByUsername(c *gin.Context) models.User {
 	var user models.User
 	username := c.Param("username")
 	uc.gormDB.
@@ -131,13 +132,13 @@ func (uc UserController) GetUserByUsername(c *gin.Context) (models.User) {
 	return user
 }
 
-func (uc UserController) GetUserModelByLogin(userId string) (*models.User) {
+func (uc UserController) GetUserModelByLogin(userId string) *models.User {
 	var user = uc.gormDB.First(&models.User{}, "Username = ?", userId)
 	if user.Value.(*models.User).ID == 0 {
 		return nil
 	}
 	_ = user.Value
-	return  user.Value.(*models.User)
+	return user.Value.(*models.User)
 }
 
 func getPasswordHash(password string) string {
@@ -156,7 +157,7 @@ func mergeUsers(init models.User, new models.User) models.User {
 	if new.Email != "" {
 		merged.Email = new.Email
 	}
-	if new.RoleID != 0  {
+	if new.RoleID != 0 {
 		merged.RoleID = new.RoleID
 	}
 	if len(new.Expenses) > 0 {

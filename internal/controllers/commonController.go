@@ -17,6 +17,26 @@ func NewCommonController(pg *gorm.DB) CommonController {
 	return CommonController{db: *pg}
 }
 
+func (cc CommonController) AddTimePeriod(c *gin.Context) {
+	var period models.TimePeriod
+	c.BindJSON(&period)
+	cc.db.Create(&period)
+	c.JSON(http.StatusCreated, gin.H{"period": period})
+}
+
+func (cc CommonController) GetTimePeriod(c *gin.Context) {
+	var period models.TimePeriod
+	c.BindJSON(&period)
+	cc.db.Model(&period).Where("name = ?", period.Name).First(&period)
+	c.JSON(http.StatusOK, period)
+}
+
+func (cc CommonController) GetAllTimePeriods(c *gin.Context) {
+	var periods []models.TimePeriod
+	cc.db.Find(&periods)
+	c.JSON(http.StatusOK, periods)
+}
+
 func (cc CommonController) AddRole(c *gin.Context) {
 	var role models.Role
 	c.BindJSON(&role)

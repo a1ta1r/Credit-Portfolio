@@ -1,4 +1,5 @@
 package controllers
+
 import (
 	"crypto/tls"
 	"fmt"
@@ -36,12 +37,12 @@ func (mail *Mail) BuildMessage() string {
 	return message
 }
 
-func mail(reciever string, username string, password string) {
+func mail(reciever string, username string, password string) bool {
 	mail := Mail{}
 	mail.senderId = "credit-portfolio@mail.ru"
 	mail.toIds = []string{reciever}
-	mail.subject = "Welcome to portfolio on credit team!"
-	mail.body = "This message was sent automaticly. Your username for signing in is:\n        " + username + "\npassword is:\n        " + password + "\n\nYou are Welcome!"
+	mail.subject = "Данное письмо отправлено вам, так как оно указано при регистрации в сервисе \"Кредитный портфель\"."
+	mail.body = "Ваше имя пользователя для входа:\n        " + username + "\nВаш пароль для входа:\n        " + password + "\n\nДобро пожаловать!"
 
 	messageBody := mail.BuildMessage()
 
@@ -58,45 +59,54 @@ func mail(reciever string, username string, password string) {
 
 	conn, err := tls.Dial("tcp", smtpServer.ServerName(), tlsconfig)
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
+		return false
 	}
 
 	client, err := smtp.NewClient(conn, smtpServer.host)
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
+		return false
 	}
 
 	if err = client.Auth(auth); err != nil {
-		log.Panic(err)
+		log.Println(err)
+		return false
 	}
 
 	if err = client.Mail(mail.senderId); err != nil {
-		log.Panic(err)
+		log.Println(err)
+		return false
 	}
 	for _, k := range mail.toIds {
 		if err = client.Rcpt(k); err != nil {
-			log.Panic(err)
+			log.Println("Such email does not exist!")
+			log.Println(err)
+			return false
 		}
 	}
 
 	w, err := client.Data()
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
+		return false
 	}
 
 	_, err = w.Write([]byte(messageBody))
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
+		return false
 	}
 
 	err = w.Close()
 	if err != nil {
-		log.Println("Such email does not exist!")
-		log.Panic(err)
+		log.Println(err)
+		return false
 	}
 
 	client.Quit()
 
 	log.Println("Mail sent successfully")
+	return true
 
 }
