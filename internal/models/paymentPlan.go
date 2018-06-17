@@ -21,5 +21,5 @@ type PaymentPlan struct {
 	InterestRate  float64     `json:"interestRate"`
 	Months        uint        `json:"numberOfMonths"`
 	StartDate     time.Time   `json:"startDate"`
-	Payments      []Payment   `json:"payments"`
+	Payments      []Payment   `json:"paymentList"`
 }

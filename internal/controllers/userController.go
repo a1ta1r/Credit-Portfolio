@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/appleboy/gin-jwt.v2"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -40,13 +41,17 @@ func (uc UserController) GetUsers(c *gin.Context) {
 
 func (uc UserController) UpdateUser(c *gin.Context) {
 	var user models.User
-	c.ShouldBindWith(&user, binding.JSON)
+	if err := c.ShouldBindWith(&user, binding.JSON); err != nil {
+		log.Println(err)
+		panic(err)
+	}
 	var dbUser models.User
 	uc.gormDB.
 		Preload("Role").
 		Preload("PaymentPlans").
 		Preload("Expenses").
 		Preload("Incomes").
+		Preload("PaymentPlans.Payments").
 		Table("users").Where("id = ?", user.ID).First(&dbUser)
 	uc.gormDB.Model(&dbUser).Association("Incomes").Clear()
 	uc.gormDB.Model(&dbUser).Association("Expenses").Clear()
@@ -124,6 +129,7 @@ func (uc UserController) GetUserByUsername(c *gin.Context) models.User {
 		Preload("PaymentPlans").
 		Preload("Expenses").
 		Preload("Incomes").
+		Preload("PaymentPlans.Payments").
 		Table("users").Where("username = ?", username).First(&user)
 	if user.ID == 0 {
 		return models.User{}
@@ -165,6 +171,9 @@ func mergeUsers(init models.User, new models.User) models.User {
 	}
 	if len(new.Incomes) > 0 {
 		merged.Incomes = new.Incomes
+	}
+	if len(new.PaymentPlans) > 0 {
+		merged.PaymentPlans = new.PaymentPlans
 	}
 	return merged
 }

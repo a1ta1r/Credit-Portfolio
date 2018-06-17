@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"github.com/jinzhu/gorm"
-	"github.com/gin-gonic/gin"
 	"github.com/a1ta1r/Credit-Portfolio/internal/models"
-	"strconv"
-	"net/http"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"net/http"
+	"strconv"
 )
 
 type PaymentPlanController struct {
@@ -30,9 +30,9 @@ func (paymentPlanController PaymentPlanController) GetPaymentPlans(c *gin.Contex
 	}
 	paymentPlanController.gormDB.Offset(offset).Limit(limit).Find(&paymentPlans)
 	c.JSON(http.StatusOK, gin.H{
-		"limit":  limit,
-		"offset": offset,
-		"paymentPlans":  paymentPlans,
+		"limit":        limit,
+		"offset":       offset,
+		"paymentPlans": paymentPlans,
 	})
 }
 
@@ -43,7 +43,7 @@ func (paymentPlanController PaymentPlanController) GetPaymentPlan(c *gin.Context
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": utils.BadID})
 		return
 	}
-	paymentPlanController.gormDB.First(&paymentPlan, id)
+	paymentPlanController.gormDB.Preload("Payments").First(&paymentPlan, id)
 	if paymentPlan.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"message": utils.ResNotFound})
 		return

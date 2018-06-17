@@ -4,7 +4,6 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/app"
 	"github.com/a1ta1r/Credit-Portfolio/internal/controllers"
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
-	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
@@ -19,23 +18,24 @@ func main() {
 		panic(utils.ConnectionError)
 	}
 
-	db.AutoMigrate(
-		&models.Bank{},
-		&models.Currency{},
-		&models.PaymentType{},
-		&models.Role{},
-		&models.TimePeriod{},
-		&models.User{},
-		&models.PaymentPlan{},
-		&models.Payment{},
-		&models.Income{},
-		&models.Expense{},
-	)
+	//db.AutoMigrate(
+	//	&models.Bank{},
+	//	&models.Currency{},
+	//	&models.PaymentType{},
+	//	&models.Role{},
+	//	&models.TimePeriod{},
+	//	&models.User{},
+	//	&models.PaymentPlan{},
+	//	&models.Payment{},
+	//	&models.Income{},
+	//	&models.Expense{},
+	//)
 
 	healthController := controllers.NewHealthController(db)
 	userController := controllers.NewUserController(db)
 	commonController := controllers.NewCommonController(db)
 	paymentPlanController := controllers.NewPaymentPlanController(db)
+	paymentController := controllers.NewPaymentController(db)
 
 	router := gin.New()
 
@@ -65,6 +65,11 @@ func main() {
 		secureJWTGroup.GET("/plan/:id", paymentPlanController.GetPaymentPlan)
 		secureJWTGroup.POST("/plan", paymentPlanController.AddPaymentPlan)
 		secureJWTGroup.DELETE("/plan/:id", paymentPlanController.DeletePaymentPlan)
+
+		secureJWTGroup.GET("/plan/:id/payments", paymentController.GetPaymentsByPlan)
+		secureJWTGroup.GET("/payment/:id", paymentController.GetPayment)
+		secureJWTGroup.POST("/payment", paymentController.AddPayment)
+		secureJWTGroup.DELETE("/payment/:id", paymentController.DeletePayment)
 
 		secureJWTGroup.GET("/user", userController.GetUser)
 	}
