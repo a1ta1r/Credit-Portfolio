@@ -41,8 +41,8 @@ func mail(reciever string, username string, password string) bool {
 	mail := Mail{}
 	mail.senderId = "credit-portfolio@mail.ru"
 	mail.toIds = []string{reciever}
-	mail.subject = "Данное письмо отправлено вам, так как оно указано при регистрации в сервисе \"Кредитный портфель\"."
-	mail.body = "Ваше имя пользователя для входа:\n        " + username + "\nВаш пароль для входа:\n        " + password + "\n\nДобро пожаловать!"
+	mail.subject = "Регистрация в сервисе \"Кредитный Портфель\""
+	mail.body = "Данное письмо отправлено вам, так как оно указано при регистрации в сервисе \"Кредитный портфель\".\nВаше имя пользователя для входа:\n        " + username + "\nВаш пароль для входа:\n        " + password + "\n\nДобро пожаловать!"
 
 	messageBody := mail.BuildMessage()
 
