@@ -1,4 +1,4 @@
-package utils
+package codes
 
 const InternalError = "internal error occurred"
 const NotFound = "page not found"

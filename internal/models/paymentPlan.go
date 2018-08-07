@@ -9,13 +9,13 @@ type PaymentPlan struct {
 	CreatedAt     time.Time   `json:"-"`
 	UpdatedAt     time.Time   `json:"-"`
 	Title         string      `json:"title"`
-	User          User        `json:"-"`
+	User          User        `json:"user"`
 	UserID        uint        `json:"userId"`
-	Bank          Bank        `json:"-"`
+	Bank          Bank        `json:"bank"`
 	BankID        uint        `json:"bankId"`
-	Currency      Currency    `json:"-"`
+	Currency      Currency    `json:"currency"`
 	CurrencyID    uint        `json:"currencyId"`
-	PaymentType   PaymentType `json:"-"`
+	PaymentType   PaymentType `json:"paymentType"`
 	PaymentTypeID uint        `json:"paymentTypeId"`
 	Amount        float64     `json:"paymentAmount"`
 	InterestRate  float64     `json:"interestRate"`

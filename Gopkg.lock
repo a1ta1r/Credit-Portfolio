@@ -2,6 +2,21 @@
 
 
 [[projects]]
+  name = "cloud.google.com/go"
+  packages = ["civil"]
+  revision = "0fd7230b2a7505833d5f69b75cbd6c9582401479"
+  version = "v0.23.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/denisenkom/go-mssqldb"
+  packages = [
+    ".",
+    "internal/cp"
+  ]
+  revision = "f93c71931b97de6c26c0ed52a7a42b69fcf961e2"
+
+[[projects]]
   name = "github.com/gin-contrib/cors"
   packages = ["."]
   revision = "cf4846e6a636a76237a28d9286f163c132e841bc"
@@ -32,6 +47,7 @@
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
+    "dialects/mssql",
     "dialects/postgres"
   ]
   revision = "6ed508ec6a4ecb3531899a69cbc746ccf65a4166"
@@ -74,7 +90,8 @@
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
-    "blowfish"
+    "blowfish",
+    "md4"
   ]
   revision = "8ac0e0d97ce45cd83d1d7243c060cb8461dda5e9"
 
@@ -110,6 +127,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a8bbbd7f13f3f2e997fca623875140332b9096506d4b784ac11f73e4a636ea94"
+  inputs-digest = "b754f9f45ba5237f5f732b9a9568628e9448956bc56fc7baf7ddcc8d5e21ba1b"
   solver-name = "gps-cdcl"
   solver-version = 1

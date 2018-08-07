@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"golang.org/x/crypto/bcrypt"
+	"time"
+)
 
 type User struct {
 	ID           uint          `gorm:"primary_key" json:"id"`
@@ -10,8 +13,15 @@ type User struct {
 	Email        string        `json:"email" gorm:"type:varchar(100);unique_index"`
 	Password     string        `json:"password,omitempty"`
 	Role         Role          `json:"role"`
-	RoleID       uint          `json:"roleId"`
 	PaymentPlans []PaymentPlan `json:"paymentPlans"`
 	Incomes      []Income      `json:"incomes"`
 	Expenses     []Expense     `json:"expenses"`
+}
+
+func (u User) GetHashedPassword() string {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		panic(err)
+	}
+	return string(hashedPassword)
 }

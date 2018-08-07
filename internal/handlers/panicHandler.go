@@ -3,7 +3,7 @@ package handlers
 import (
 	"bytes"
 	"fmt"
-	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
+	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"log"
@@ -30,7 +30,7 @@ func PanicHandler(c *gin.Context) {
 				httprequest, _ := httputil.DumpRequest(c.Request, false)
 				logger.Printf("[Recovery] panic recovered:\n%s\n%s\n%s%s", string(httprequest), err, stack, reset)
 			}
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": utils.InternalError})
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": codes.InternalError})
 		}
 	}()
 	c.Next()
