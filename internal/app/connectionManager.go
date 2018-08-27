@@ -11,9 +11,11 @@ var sqlConn *gorm.DB
 
 func GetConnection() (gorm.DB, error) {
 	if sqlConn == nil {
-		if conn, err := getPostgres(); err == nil {
-			sqlConn = &conn
-		} else if conn, err := getMssql(); err == nil {
+		//if conn, err := getPostgres(); err == nil {
+		//	sqlConn = &conn
+		//} else
+
+		if conn, err := getMssql(); err == nil {
 			sqlConn = &conn
 		} else {
 			return gorm.DB{}, err
@@ -32,9 +34,9 @@ func getPostgres() (gorm.DB, error) {
 }
 
 func getMssql() (gorm.DB, error) {
-	//"sqlserver://username:password@localhost:1433?database=dbname"
-	conn, err := gorm.Open("mssql", os.Getenv("MSSQL_URL"))
+	conn, err := gorm.Open("mssql", os.Getenv("URL"))
 	if err != nil {
+		println(err.Error())
 		return *conn, err
 	}
 	return *conn, nil
