@@ -15,7 +15,7 @@ type UserService struct {
 }
 
 func (us UserService) GetUsers(offset int64, limit int64) []models.User {
-	if users, err := us.storageContainer.UserStorage.GetAll(offset, limit); err != nil && err != gorm.ErrRecordNotFound {
+	if users, err := us.storageContainer.UserStorage.GetAll(); err != nil && err != gorm.ErrRecordNotFound {
 		panic(err)
 	} else {
 		return users

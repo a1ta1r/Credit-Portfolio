@@ -38,8 +38,8 @@ func (us userStorage) Delete(user models.User) error {
 	return us.DB.Delete(&user, user.ID).Error
 }
 
-func (us userStorage) GetAll(offset int64, limit int64) ([]models.User, error) {
+func (us userStorage) GetAll() ([]models.User, error) {
 	var users []models.User
-	err := us.DB.Offset(offset).Limit(limit).Find(&users).Error
+	err := us.DB.Find(&users).Error
 	return users, err
 }

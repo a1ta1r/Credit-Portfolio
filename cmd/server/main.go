@@ -5,7 +5,6 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/controllers"
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
-	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/storages"
 	"github.com/gin-gonic/gin"
@@ -21,15 +20,15 @@ func main() {
 		panic(codes.ConnectionError)
 	}
 
-	db.AutoMigrate(
-		&models.Bank{},
-		&models.Currency{},
-		&models.User{},
-		&models.PaymentPlan{},
-		&models.Payment{},
-		&models.Income{},
-		&models.Expense{},
-	)
+	// db.AutoMigrate(
+	// 	&models.Bank{},
+	// 	&models.Currency{},
+	// 	&models.User{},
+	// 	&models.PaymentPlan{},
+	// 	&models.Payment{},
+	// 	&models.Income{},
+	// 	&models.Expense{},
+	// )
 
 	storageContainer := storages.NewStorageContainer(db)
 
@@ -57,10 +56,10 @@ func main() {
 		secure.GET("/refreshToken", jwtMiddleware.RefreshHandler)
 
 		secure.GET("/users", userController.GetUsers)
-		secure.GET("/user/:username", userController.GetUserByUsername)
-		secure.PUT("/user", userController.UpdateUser)
-		secure.DELETE("/user", userController.DeleteUser)
-		secure.GET("/user", userController.GetUser)
+		secure.GET("/users/:username", userController.GetUserByUsername)
+		secure.PUT("/users", userController.UpdateUser)
+		secure.DELETE("/users", userController.DeleteUser)
+		secure.GET("/user", userController.GetUserByJWT)
 
 		secure.GET("auth/:token")
 
