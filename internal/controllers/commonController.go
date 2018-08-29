@@ -62,3 +62,37 @@ func (cc CommonController) GetBank(c *gin.Context) {
 	cc.db.First(&bank, id)
 	c.JSON(http.StatusOK, gin.H{"bank": bank})
 }
+
+func (cc CommonController) DeleteBank(c *gin.Context) {
+	var bank models.Bank
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	cc.db.First(&bank, id)
+	if bank.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	cc.db.First(&bank, id)
+	cc.db.Delete(&bank)
+	c.JSON(http.StatusOK, gin.H{"bank": bank})
+}
+
+func (cc CommonController) UpdateBank(c *gin.Context) {
+	var bank models.Bank
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	cc.db.First(&bank, id)
+	if bank.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	c.BindJSON(&bank)
+	cc.db.Save(&bank)
+	c.JSON(http.StatusOK, gin.H{"bank": bank})
+}

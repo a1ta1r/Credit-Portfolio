@@ -81,6 +81,8 @@ func main() {
 
 	router.GET("/bank/:id", commonController.GetBank)
 	router.POST("/bank", commonController.AddBank)
+	router.DELETE("/bank/:id", commonController.DeleteBank)
+	router.PUT("/bank/:id", commonController.UpdateBank)
 
 	router.GET("/currency/:id", commonController.GetCurrency)
 	router.POST("/currency", commonController.AddCurrency)
