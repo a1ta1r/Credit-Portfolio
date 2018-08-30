@@ -24,6 +24,40 @@ func (cc CommonController) AddCurrency(c *gin.Context) {
 	c.JSON(http.StatusCreated, currency)
 }
 
+func (cc CommonController) DeleteCurrency(c *gin.Context) {
+	var currency models.Currency
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	cc.db.First(&currency, id)
+	if currency.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	cc.db.First(&currency, id)
+	cc.db.Delete(&currency)
+	c.JSON(http.StatusOK, gin.H{"currency deleted": currency.Name})
+}
+
+func (cc CommonController) UpdateCurrency(c *gin.Context) {
+	var currency models.Currency
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	cc.db.First(&currency, id)
+	if currency.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	c.BindJSON(&currency)
+	cc.db.Save(&currency)
+	c.JSON(http.StatusOK, gin.H{"bank": currency})
+}
+
 func (cc CommonController) AddBank(c *gin.Context) {
 	var bank models.Bank
 	c.BindJSON(&bank)
@@ -77,7 +111,7 @@ func (cc CommonController) DeleteBank(c *gin.Context) {
 	}
 	cc.db.First(&bank, id)
 	cc.db.Delete(&bank)
-	c.JSON(http.StatusOK, gin.H{"bank": bank})
+	c.JSON(http.StatusOK, gin.H{"bank deleted": bank.Name})
 }
 
 func (cc CommonController) UpdateBank(c *gin.Context) {
@@ -94,5 +128,5 @@ func (cc CommonController) UpdateBank(c *gin.Context) {
 	}
 	c.BindJSON(&bank)
 	cc.db.Save(&bank)
-	c.JSON(http.StatusOK, gin.H{"bank": bank})
+	c.JSON(http.StatusOK, gin.H{"bank updated": bank.Name})
 }

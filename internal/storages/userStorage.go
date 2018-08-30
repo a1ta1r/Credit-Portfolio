@@ -31,7 +31,7 @@ func (us userStorage) GetByUsername(username string) (models.User, error) {
 }
 
 func (us userStorage) Update(user models.User) error {
-	return us.DB.Update(&user, user.ID).Error
+	return us.DB.Save(&user).Error
 }
 
 func (us userStorage) Delete(user models.User) error {

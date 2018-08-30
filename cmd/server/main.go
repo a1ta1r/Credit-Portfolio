@@ -72,6 +72,10 @@ func main() {
 		secure.GET("/payment/:id", paymentController.GetPayment)
 		secure.POST("/payment", paymentController.AddPayment)
 		secure.DELETE("/payment/:id", paymentController.DeletePayment)
+
+		router.DELETE("/user/:id", userController.DeleteUser)
+		router.PUT("/user/:id", userController.UpdateUser)
+		router.GET("/user/:id", userController.GetUser)
 	}
 
 	router.GET("/health", healthController.HealthCheck)
@@ -86,6 +90,8 @@ func main() {
 
 	router.GET("/currency/:id", commonController.GetCurrency)
 	router.POST("/currency", commonController.AddCurrency)
+	router.DELETE("/currency/:id", commonController.DeleteCurrency)
+	router.PUT("/currency/:id", commonController.UpdateCurrency)
 
 	router.NoRoute(controllers.NotFound)
 

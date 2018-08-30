@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
 
@@ -8,7 +9,6 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	"gopkg.in/appleboy/gin-jwt.v2"
 )
 
@@ -62,12 +62,38 @@ func (uc UserController) GetUsers(c *gin.Context) {
 //UpdateUser updates user data in database and returns new user entity in JSON
 func (uc UserController) UpdateUser(c *gin.Context) {
 	var user models.User
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	user = uc.userService.GetUserByID(uint(id))
+	if user.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+
 	c.ShouldBindWith(&user, binding.JSON)
 	user = uc.userService.UpdateUser(user)
 	c.JSON(http.StatusOK, gin.H{
 		"status": "OK",
 		"user":   user,
 	})
+}
+
+func (uc UserController) GetUser(c *gin.Context) {
+	var user models.User
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	user = uc.userService.GetUserByID(uint(id))
+	if user.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
 //AddUser creates new user entity and adds it to database
