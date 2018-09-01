@@ -58,6 +58,23 @@ func (paymentPlanController PaymentPlanController) AddPaymentPlan(c *gin.Context
 	c.JSON(http.StatusCreated, gin.H{"paymentPlan": paymentPlan})
 }
 
+func (paymentPlanController PaymentPlanController) UpdatePaymentPlan(c *gin.Context) {
+	var paymentPlan models.PaymentPlan
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	paymentPlanController.gormDB.Preload("Payments").First(&paymentPlan, id)
+	if paymentPlan.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	c.BindJSON(&paymentPlan)
+	paymentPlanController.gormDB.Create(&paymentPlan)
+	c.JSON(http.StatusCreated, gin.H{"paymentPlan": paymentPlan})
+}
+
 func (paymentPlanController PaymentPlanController) DeletePaymentPlan(c *gin.Context) {
 	var paymentPlan models.PaymentPlan
 	c.BindJSON(&paymentPlan)

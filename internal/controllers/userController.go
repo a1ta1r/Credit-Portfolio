@@ -105,6 +105,7 @@ func (uc UserController) AddUser(c *gin.Context) {
 	user.Password = user.GetHashedPassword()
 	user = uc.userService.CreateUser(user)
 	sendMail(user.Email, user.Username, mailPassword)
+	user = uc.userService.GetUserByUsername(user.Username)
 	c.JSON(http.StatusCreated, user)
 }
 

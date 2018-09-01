@@ -64,18 +64,16 @@ func main() {
 		secure.GET("auth/:token")
 
 		secure.GET("/plan", paymentPlanController.GetPaymentPlans)
+
 		secure.GET("/plan/:id", paymentPlanController.GetPaymentPlan)
 		secure.POST("/plan", paymentPlanController.AddPaymentPlan)
+		secure.PUT("/plan/:id", paymentPlanController.UpdatePaymentPlan)
 		secure.DELETE("/plan/:id", paymentPlanController.DeletePaymentPlan)
 
 		secure.GET("/plan/:id/payments", paymentController.GetPaymentsByPlan)
 		secure.GET("/payment/:id", paymentController.GetPayment)
 		secure.POST("/payment", paymentController.AddPayment)
 		secure.DELETE("/payment/:id", paymentController.DeletePayment)
-
-		router.DELETE("/user/:id", userController.DeleteUser)
-		router.PUT("/user/:id", userController.UpdateUser)
-		router.GET("/user/:id", userController.GetUser)
 	}
 
 	router.GET("/health", healthController.HealthCheck)
