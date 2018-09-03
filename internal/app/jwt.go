@@ -17,8 +17,8 @@ func NewJwtWrapper(userService services.UserService) JwtWrapper {
 	return JwtWrapper{userService: userService}
 }
 
-func (w JwtWrapper) GetJwtMiddleware() *jwt.GinJWTMiddleware {
-	jwtMiddleware := &jwt.GinJWTMiddleware{
+func (w JwtWrapper) GetJwtMiddleware() jwt.GinJWTMiddleware {
+	jwtMiddleware := jwt.GinJWTMiddleware{
 		Realm:         "robreid.io",
 		Key:           []byte("portfolio-on-credit-very-very-very-secret-key"),
 		Timeout:       time.Hour,
@@ -31,7 +31,7 @@ func (w JwtWrapper) GetJwtMiddleware() *jwt.GinJWTMiddleware {
 
 func (w JwtWrapper) authenticatorFunc(username string, password string, c *gin.Context) (string, bool) {
 	var users []models.User
-	users = w.userService.GetUsers(0, -1)
+	users = w.userService.GetUsers()
 	for i := 0; i < len(users); i++ {
 		var err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
 		if username == users[i].Username && err == nil {
@@ -46,5 +46,6 @@ func (w *JwtWrapper) Payload(username string) map[string]interface{} {
 	return map[string]interface{}{
 		"username": user.Username,
 		"role":     user.Role,
+		"user_id":  user.ID,
 	}
 }

@@ -14,7 +14,7 @@ type UserService struct {
 	storageContainer storages.StorageContainer
 }
 
-func (us UserService) GetUsers(offset int64, limit int64) []models.User {
+func (us UserService) GetUsers() []models.User {
 	if users, err := us.storageContainer.UserStorage.GetAll(); err != nil && err != gorm.ErrRecordNotFound {
 		panic(err)
 	} else {

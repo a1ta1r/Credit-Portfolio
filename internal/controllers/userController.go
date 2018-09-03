@@ -12,7 +12,7 @@ import (
 	"gopkg.in/appleboy/gin-jwt.v2"
 )
 
-//UserController processess user-related HTTP requests
+//UserController processes user-related HTTP requests
 type UserController struct {
 	userService services.UserService
 }
@@ -39,16 +39,7 @@ func (uc UserController) GetUserByUsername(c *gin.Context) {
 
 //GetUsers returns all users present in the database
 func (uc UserController) GetUsers(c *gin.Context) {
-	// limit, offset := int64(-1), int64(0)
-	// reqLimit, _ := strconv.ParseInt(c.Query("limit"), 10, 32)
-	// reqOffset, _ := strconv.ParseInt(c.Query("offset"), 10, 32)
-	// if reqLimit > 0 {
-	// 	limit = reqLimit
-	// }
-	// if reqOffset > 0 {
-	// 	offset = reqOffset
-	// }
-	users := uc.userService.GetUsers(0, 10)
+	users := uc.userService.GetUsers()
 	for i := 0; i < len(users); i++ {
 		users[i].Password = ""
 	}
@@ -120,7 +111,7 @@ func (uc UserController) DeleteUser(c *gin.Context) {
 //GetUserByJWT returns JSON with currently authenticated user using JWT
 func (uc UserController) GetUserByJWT(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
-	id, _ := strconv.ParseInt(claims["id"].(string), 10, 32)
+	id := int(claims["user_id"].(float64))
 	user := uc.userService.GetUserByID(uint(id))
 	if user.ID == 0 {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})

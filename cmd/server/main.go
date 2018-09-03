@@ -32,12 +32,13 @@ func main() {
 
 	storageContainer := storages.NewStorageContainer(db)
 
+	//Add services to DI
 	userService := services.NewUserService(storageContainer)
 
 	healthController := controllers.NewHealthController(&db)
 	userController := controllers.NewUserController(userService)
 	commonController := controllers.NewCommonController(&db)
-	paymentPlanController := controllers.NewPaymentPlanController(&db)
+	paymentPlanController := controllers.NewPaymentPlanController(&db, userService, services.PaymentPlanService{})
 	paymentController := controllers.NewPaymentController(&db)
 
 	router := gin.New()
@@ -51,7 +52,7 @@ func main() {
 
 	secure := router.Group("/")
 	//secure.Use(jwtMiddleware.MiddlewareFunc())
-	secure.Use()
+	secure.Use(jwtMiddleware.MiddlewareFunc())
 	{
 		secure.GET("/refreshToken", jwtMiddleware.RefreshHandler)
 
@@ -60,8 +61,6 @@ func main() {
 		secure.PUT("/users", userController.UpdateUser)
 		secure.DELETE("/users", userController.DeleteUser)
 		secure.GET("/user", userController.GetUserByJWT)
-
-		secure.GET("auth/:token")
 
 		secure.GET("/plan", paymentPlanController.GetPaymentPlans)
 

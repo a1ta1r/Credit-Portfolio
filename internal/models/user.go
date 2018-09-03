@@ -14,7 +14,7 @@ type User struct {
 	Password     string        `json:"password,omitempty"`
 	Role         Role          `json:"role"`
 	PaymentPlans []PaymentPlan `json:"paymentPlans"`
-	Incomes      []Income      `json:"incomes"`
+	Incomes      []Income      `json:"incomes",default:"[]"`
 	Expenses     []Expense     `json:"expenses"`
 }
 
