@@ -10,56 +10,56 @@ import (
 	"strconv"
 )
 
-type ExpenceController struct {
+type ExpenseController struct {
 	gormDB gorm.DB
 }
 
-func NewExpenceController(db *gorm.DB) ExpenceController {
-	return ExpenceController{gormDB: *db}
+func NewExpenseController(db *gorm.DB) ExpenseController {
+	return ExpenseController{gormDB: *db}
 }
 
-func (expenceController ExpenceController) GetExpenceById(c *gin.Context) {
-	var expence models.Income
+func (expenseController ExpenseController) GetExpenseById(c *gin.Context) {
+	var expense models.Income
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	expenceController.gormDB.Preload("Payments").First(&expence, id)
-	if expence.ID == 0 {
+	expenseController.gormDB.Preload("Payments").First(&expense, id)
+	if expense.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"expence": expence})
+	c.JSON(http.StatusOK, gin.H{"expense": expense})
 }
 
-func (expenceController ExpenceController) AddExpence(c *gin.Context) {
-	var expence models.Income
-	c.BindJSON(&expence)
-	expenceController.gormDB.Create(&expence)
-	c.JSON(http.StatusCreated, gin.H{"expence": expence})
+func (expenseController ExpenseController) AddExpense(c *gin.Context) {
+	var expense models.Income
+	c.BindJSON(&expense)
+	expenseController.gormDB.Create(&expense)
+	c.JSON(http.StatusCreated, gin.H{"expense": expense})
 }
 
-func (expenceController ExpenceController) UpdateExpenceById(c *gin.Context) {
-	var expence models.Income
+func (expenseController ExpenseController) UpdateExpenseById(c *gin.Context) {
+	var expense models.Income
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	expenceController.gormDB.Preload("Payments").First(&expence, id)
-	if expence.ID == 0 {
+	expenseController.gormDB.Preload("Payments").First(&expense, id)
+	if expense.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
 	}
-	c.BindJSON(&expence)
-	expenceController.gormDB.Update(&expence)
-	c.JSON(http.StatusCreated, gin.H{"expence": expence})
+	c.BindJSON(&expense)
+	expenseController.gormDB.Update(&expense)
+	c.JSON(http.StatusCreated, gin.H{"expense": expense})
 }
 
-func (expenceController ExpenceController) DeleteExpenceById(c *gin.Context) {
-	var expence models.Income
-	c.BindJSON(&expence)
-	expenceController.gormDB.Delete(&expence)
+func (expenseController ExpenseController) DeleteExpenseById(c *gin.Context) {
+	var expense models.Income
+	c.BindJSON(&expense)
+	expenseController.gormDB.Delete(&expense)
 	c.JSON(http.StatusOK, gin.H{"message": codes.ResDeleted})
 }

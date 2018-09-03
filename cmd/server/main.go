@@ -40,8 +40,8 @@ func main() {
 	commonController := controllers.NewCommonController(&db)
 	paymentPlanController := controllers.NewPaymentPlanController(&db, userService, services.PaymentPlanService{})
 	paymentController := controllers.NewPaymentController(&db)
-	incomeController := controllers.NewIncomeController(&db)
-	expenceController := controllers.NewExpenceController(&db)
+	incomeController := controllers.NewIncomeController(&db, userService)
+	expenceController := controllers.NewExpenseController(&db /*, userService*/)
 
 	router := gin.New()
 
@@ -81,10 +81,10 @@ func main() {
 		secure.POST("/income", incomeController.AddIncome)
 		secure.DELETE("/income/:id", incomeController.DeleteIncomeById)
 
-		secure.GET("/income/:id", expenceController.GetExpenceById)
-		secure.PUT("/income/:id", expenceController.UpdateExpenceById)
-		secure.POST("/income", expenceController.AddExpence)
-		secure.DELETE("/income/:id", expenceController.DeleteExpenceById)
+		secure.GET("/expense/:id", expenceController.GetExpenseById)
+		secure.PUT("/expense/:id", expenceController.UpdateExpenseById)
+		secure.POST("/expense", expenceController.AddExpense)
+		secure.DELETE("/expense/:id", expenceController.DeleteExpenseById)
 	}
 
 	router.GET("/health", healthController.HealthCheck)
