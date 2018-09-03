@@ -14,6 +14,6 @@ type AgendaService struct {
 	storageContainer storages.StorageContainer
 }
 
-func (as AgendaService) GetElementsByTime(from time.Time, to time.Time) []models.AgendaElement {
+func (as AgendaService) GetElementsByTimeAndUserID(from time.Time, to time.Time, userId uint) []models.AgendaElement {
 	return []models.AgendaElement{}
 }

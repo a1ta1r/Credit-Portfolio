@@ -4,6 +4,7 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/services"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/appleboy/gin-jwt.v2"
 	"net/http"
 	"time"
 )
@@ -24,16 +25,16 @@ func (ac AgendaController) GetAgendaElements(context *gin.Context) {
 	var to time.Time
 	var dateError error
 
-	if fromString != "" {
-		from, dateError = time.Parse(layout, fromString)
-	} else {
-		from = time.Now().AddDate(0, 0, -7)
-	}
-
 	if toString != "" {
 		to, dateError = time.Parse(layout, toString)
 	} else {
-		time.Now()
+		to = time.Now()
+	}
+
+	if fromString != "" {
+		from, dateError = time.Parse(layout, fromString)
+	} else {
+		from = to.AddDate(0, 0, -7)
 	}
 
 	if dateError != nil {
@@ -41,7 +42,9 @@ func (ac AgendaController) GetAgendaElements(context *gin.Context) {
 		return
 	}
 
-	elements := ac.agendaService.GetElementsByTime(from, to)
+	userId := uint(jwt.ExtractClaims(context)["user_id"].(float64))
 
-	context.JSON(http.StatusOK, gin.H{"count": len(elements), "elements": elements})
+	elements := ac.agendaService.GetElementsByTimeAndUserID(from, to, userId)
+
+	context.JSON(http.StatusOK, gin.H{"dateFrom": from, "dateTo": to, "count": len(elements), "elements": elements})
 }
