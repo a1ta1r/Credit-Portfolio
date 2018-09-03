@@ -72,6 +72,29 @@ func (uc UserController) UpdateUser(c *gin.Context) {
 	})
 }
 
+func (uc UserController) UpdateUserByJWT(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	id := uint(claims["user_id"].(float64))
+	if id == 0 {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	user := uc.userService.GetUserByID(id)
+	if user.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+
+	role := user.Role
+	c.ShouldBindWith(&user, binding.JSON)
+	user.Role = role
+	user = uc.userService.UpdateUser(user)
+	c.JSON(http.StatusOK, gin.H{
+		"status": "OK",
+		"user":   user,
+	})
+}
+
 func (uc UserController) GetUser(c *gin.Context) {
 	var user models.User
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)

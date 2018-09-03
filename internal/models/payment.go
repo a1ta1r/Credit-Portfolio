@@ -13,3 +13,7 @@ type Payment struct {
 	PaymentDate   time.Time   `json:"paymentDate"`
 	PaymentAmount float64     `json:"paymentAmount"`
 }
+
+func (p Payment) transform() AgendaElement {
+	return AgendaElement{}
+}

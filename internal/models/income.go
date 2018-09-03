@@ -16,3 +16,7 @@ type Income struct {
 	PaymentPeriod  *TimePeriod `json:"paymentPeriod"`
 	RecurrentCount *uint       `json:"recurrentCount"` //число повторений в TimePeriod(4 недели, 12 лет)
 }
+
+func (i Income) transform() AgendaElement {
+	return AgendaElement{}
+}

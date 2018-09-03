@@ -33,11 +33,12 @@ func (paymentPlanController PaymentPlanController) GetPaymentPlans(c *gin.Contex
 func (paymentPlanController PaymentPlanController) GetPaymentPlan(c *gin.Context) {
 	var paymentPlan models.PaymentPlan
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
+	userId := int(jwt.ExtractClaims(c)["user_id"].(float64))
+	if err != nil || userId == 0 {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	paymentPlanController.gormDB.Preload("Payments").First(&paymentPlan, id)
+	paymentPlanController.gormDB.Preload("Payments").Where("id = ? AND user_id = ?", id, userId).First(&paymentPlan, id)
 	if paymentPlan.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
@@ -56,11 +57,12 @@ func (paymentPlanController PaymentPlanController) AddPaymentPlan(c *gin.Context
 func (paymentPlanController PaymentPlanController) UpdatePaymentPlan(c *gin.Context) {
 	var paymentPlan models.PaymentPlan
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
+	userId := int(jwt.ExtractClaims(c)["user_id"].(float64))
+	if err != nil || userId == 0 {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	paymentPlanController.gormDB.Preload("Payments").First(&paymentPlan, id)
+	paymentPlanController.gormDB.Preload("Payments").Where("id = ? AND user_id = ?", id, userId).First(&paymentPlan, id)
 	if paymentPlan.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
