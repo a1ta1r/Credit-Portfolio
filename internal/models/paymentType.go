@@ -1,9 +1,18 @@
 package models
 
-import "time"
+const (
+	Even           PaymentType = 0
+	Differentiated PaymentType = 1
+)
 
-type PaymentType struct {
-	ID        uint      `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time `json:"-"`
-	Name      string    `json:"name" gorm:"type:varchar(100);unique_index"`
+type PaymentType int
+
+func (paymentType PaymentType) String() string {
+	names := [...]string{
+		"Even",
+		"Differentiated"}
+	if paymentType < Even || paymentType > Differentiated {
+		return "Unknown"
+	}
+	return names[paymentType]
 }

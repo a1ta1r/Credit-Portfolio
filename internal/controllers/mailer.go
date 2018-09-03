@@ -37,7 +37,7 @@ func (mail *Mail) BuildMessage() string {
 	return message
 }
 
-func mail(reciever string, username string, password string) bool {
+func sendMail(reciever string, username string, password string) bool {
 	mail := Mail{}
 	mail.senderId = "credit-portfolio@mail.ru"
 	mail.toIds = []string{reciever}

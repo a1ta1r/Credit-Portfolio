@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/models"
-	"github.com/a1ta1r/Credit-Portfolio/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"net/http"
@@ -40,12 +40,12 @@ func (paymentPlanController PaymentPlanController) GetPaymentPlan(c *gin.Context
 	var paymentPlan models.PaymentPlan
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": utils.BadID})
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
 	paymentPlanController.gormDB.Preload("Payments").First(&paymentPlan, id)
 	if paymentPlan.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"message": utils.ResNotFound})
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"paymentPlan": paymentPlan})
@@ -58,9 +58,26 @@ func (paymentPlanController PaymentPlanController) AddPaymentPlan(c *gin.Context
 	c.JSON(http.StatusCreated, gin.H{"paymentPlan": paymentPlan})
 }
 
+func (paymentPlanController PaymentPlanController) UpdatePaymentPlan(c *gin.Context) {
+	var paymentPlan models.PaymentPlan
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	paymentPlanController.gormDB.Preload("Payments").First(&paymentPlan, id)
+	if paymentPlan.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	c.BindJSON(&paymentPlan)
+	paymentPlanController.gormDB.Create(&paymentPlan)
+	c.JSON(http.StatusCreated, gin.H{"paymentPlan": paymentPlan})
+}
+
 func (paymentPlanController PaymentPlanController) DeletePaymentPlan(c *gin.Context) {
 	var paymentPlan models.PaymentPlan
 	c.BindJSON(&paymentPlan)
 	paymentPlanController.gormDB.Delete(&paymentPlan)
-	c.JSON(http.StatusOK, gin.H{"message": utils.ResDeleted})
+	c.JSON(http.StatusOK, gin.H{"message": codes.ResDeleted})
 }
