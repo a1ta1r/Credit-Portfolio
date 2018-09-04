@@ -19,6 +19,21 @@ func NewExpenseController(db *gorm.DB) ExpenseController {
 	return ExpenseController{gormDB: *db}
 }
 
+func (expenseController ExpenseController) GetExpensesByJWT(c *gin.Context) {
+	var expenses []models.Expense
+	userId := int(jwt.ExtractClaims(c)["user_id"].(float64))
+	if userId == 0 {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	expenseController.gormDB.Where("user_id = ?", userId).Find(&expenses)
+	if len(expenses) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"expenses": expenses})
+}
+
 func (expenseController ExpenseController) GetExpenseById(c *gin.Context) {
 	var expense models.Expense
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)

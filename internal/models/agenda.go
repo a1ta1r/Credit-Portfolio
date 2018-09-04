@@ -12,5 +12,10 @@ type AgendaElement struct {
 }
 
 type AgendaElementTransformable interface {
-	transform() AgendaElement
+	Transform() AgendaElement
+}
+
+type PeriodicAgendaElementsTransformable interface {
+	Transform() AgendaElement
+	TransformWithPeriod(from time.Time, to time.Time) []AgendaElement
 }

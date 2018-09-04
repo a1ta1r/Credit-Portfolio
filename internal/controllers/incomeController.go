@@ -18,6 +18,21 @@ func NewIncomeController(db *gorm.DB) IncomeController {
 	return IncomeController{gormDB: *db}
 }
 
+func (incomeController IncomeController) GetIncomesByJWT(c *gin.Context) {
+	var incomes []models.Income
+	userId := int(jwt.ExtractClaims(c)["user_id"].(float64))
+	if userId == 0 {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	incomeController.gormDB.Where("user_id = ?", userId).Find(&incomes)
+	if len(incomes) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"incomes": incomes})
+}
+
 func (incomeController IncomeController) GetIncomeById(c *gin.Context) {
 	var income models.Income
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)

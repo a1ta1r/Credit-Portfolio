@@ -36,7 +36,7 @@ func main() {
 
 	//Add services to DI
 	userService := services.NewUserService(storageContainer)
-	agendaService := services.NewAgendaService(storageContainer)
+	agendaService := services.NewAgendaService(db)
 
 	healthController := controllers.NewHealthController(&db)
 	userController := controllers.NewUserController(userService)
@@ -82,15 +82,17 @@ func main() {
 		//basicAccess.DELETE("/payments/:id", paymentController.DeletePayment)
 		//Вроде как юзер не должен напрямую это уметь. Сущность агрегируется в пейментплане.
 
-		basicAccess.GET("/income/:id", incomeController.GetIncomeById)
-		basicAccess.PUT("/income/:id", incomeController.UpdateIncomeByIdAndJWT)
-		basicAccess.POST("/income", incomeController.AddIncome)
-		basicAccess.DELETE("/income/:id", incomeController.DeleteIncomeByIdAndJWT)
+		basicAccess.GET("/incomes", incomeController.GetIncomesByJWT)
+		basicAccess.GET("/incomes/:id", incomeController.GetIncomeById)
+		basicAccess.PUT("/incomes/:id", incomeController.UpdateIncomeByIdAndJWT)
+		basicAccess.POST("/incomes", incomeController.AddIncome)
+		basicAccess.DELETE("/incomes/:id", incomeController.DeleteIncomeByIdAndJWT)
 
-		basicAccess.GET("/expense/:id", expenseController.GetExpenseById)
-		basicAccess.PUT("/expense/:id", expenseController.UpdateExpenseByIdAndJWT)
-		basicAccess.POST("/expense", expenseController.AddExpense)
-		basicAccess.DELETE("/expense/:id", expenseController.DeleteExpenseByIdAndJWT)
+		basicAccess.GET("/expenses", expenseController.GetExpensesByJWT)
+		basicAccess.GET("/expenses/:id", expenseController.GetExpenseById)
+		basicAccess.PUT("/expenses/:id", expenseController.UpdateExpenseByIdAndJWT)
+		basicAccess.POST("/expenses", expenseController.AddExpense)
+		basicAccess.DELETE("/expenses/:id", expenseController.DeleteExpenseByIdAndJWT)
 
 		basicAccess.GET("/agenda", agendaController.GetAgendaElements)
 	}
