@@ -18,12 +18,21 @@ func (as AgendaService) GetElementsByTimeAndUserID(from time.Time, to time.Time,
 	var elements []models.AgendaElement
 	var incomes []models.Income
 	var expenses []models.Expense
+	var paymentPlans []models.PaymentPlan
 	var payments []models.Payment
 
 	as.db.Where(&models.Income{UserID: userId}).Find(&incomes)
 	as.db.Where(&models.Expense{UserID: userId}).Find(&expenses)
-	//хз чё тут
-	as.db.Where("user_id = ?", userId).Find(&payments)
+	as.db.Where(&models.PaymentPlan{UserID: userId}).Find(&paymentPlans)
+
+	for _, paymentPlan := range paymentPlans {
+		if paymentPlan.UserID == userId {
+			as.db.Where(&models.Payment{PaymentPlanID: paymentPlan.ID}).Find(&payments)
+			for _, payment := range payments {
+				elements = append(elements, payment.TransformWithPeriod(from, to)...)
+			}
+		}
+	}
 
 	for _, income := range incomes {
 		elements = append(elements, income.TransformWithPeriod(from, to)...)
