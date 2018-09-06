@@ -46,6 +46,7 @@ func main() {
 	incomeController := controllers.NewIncomeController(&db)
 	expenseController := controllers.NewExpenseController(&db)
 	agendaController := controllers.NewAgendaController(agendaService)
+	calculationController := controllers.NewCalculatorController(&db)
 
 	router := gin.New()
 
@@ -93,6 +94,8 @@ func main() {
 		basicAccess.PUT("/expenses/:id", expenseController.UpdateExpenseByIdAndJWT)
 		basicAccess.POST("/expenses", expenseController.AddExpense)
 		basicAccess.DELETE("/expenses/:id", expenseController.DeleteExpenseByIdAndJWT)
+
+		basicAccess.POST("/calculate", calculationController.CalculateCredit)
 
 		basicAccess.GET("/agenda", agendaController.GetAgendaElements)
 	}
