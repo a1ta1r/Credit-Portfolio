@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/models"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/jinzhu/gorm"
+	"gopkg.in/appleboy/gin-jwt.v2"
 	"math"
-	"time"
+	"net/http"
 )
 
 type CalculatorController struct {
@@ -17,42 +20,54 @@ func NewCalculatorController(pg *gorm.DB) CalculatorController {
 }
 
 func (cc CalculatorController) CalculateCredit(c *gin.Context) {
-	var creditCalculation models.CreditCalculation
-	c.BindJSON(&creditCalculation)
+	userId := uint(jwt.ExtractClaims(c)["user_id"].(float64))
 	var paymentPlan models.PaymentPlan
-	if creditCalculation.CreditType == "dafwd" {
-		paymentPlan = CalculateCreditWithEqualPayments(float64(creditCalculation.InterestRate), float64(creditCalculation.NumberOfMonths), float64(creditCalculation.PaymentAmount), creditCalculation.StartDate)
+	c.ShouldBindWith(&paymentPlan, binding.JSON)
+	paymentPlan.UserID = userId
+	if paymentPlan.PaymentType == models.Even {
+		paymentPlan = CalculateCreditWithEqualPayments(paymentPlan)
 	} else {
-		paymentPlan = CalculateCreditWithDifferentiatedPayments(float64(creditCalculation.InterestRate), float64(creditCalculation.NumberOfMonths), float64(creditCalculation.PaymentAmount), creditCalculation.StartDate)
+		paymentPlan = CalculateCreditWithDifferentiatedPayments(paymentPlan)
 	}
-	cc.db.Create(&paymentPlan)
+	if cc.db.Create(&paymentPlan).Error != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.Unhealthy})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"paymentPlan": paymentPlan,
+	})
 }
 
-func CalculateCreditWithEqualPayments(interestRate float64, numberOfMonths float64, paymentAmount float64, startDate time.Time) models.PaymentPlan {
-	var percent = interestRate / 12 / 100
-	var coefficient = (percent * math.Pow(1 + percent, float64(numberOfMonths))) / (math.Pow(1 + percent,  float64(numberOfMonths)) - 1)
-	var sum = paymentAmount * coefficient
-	var paymentPlan models.PaymentPlan
+func CalculateCreditWithEqualPayments(paymentPlan models.PaymentPlan) models.PaymentPlan {
+	var percent = paymentPlan.InterestRate / 12 / 100
+	var coefficient = (percent * math.Pow(1 + percent, float64(paymentPlan.Months))) / (math.Pow(1 + percent,  float64(paymentPlan.Months)) - 1)
+	var sum = paymentPlan.Amount * coefficient
+
 	paymentPlan.Payments = [] models.Payment{}
-	for i := 0; i < int(numberOfMonths); i++ {
-		var currentMonth = startDate.AddDate(0,1,0)
+	currentMonth := paymentPlan.StartDate
+
+	for i := 0; i < int(paymentPlan.Months); i++ {
 		var payment = models.Payment{PaymentDate: currentMonth, PaymentAmount: sum}
 		paymentPlan.Payments = append(paymentPlan.Payments, payment)
+		currentMonth = currentMonth.AddDate(0,1,0)
 	}
+	paymentPlan.TotalPaymentAmount = sum * float64(paymentPlan.Months)
 	return paymentPlan
 }
 
-func CalculateCreditWithDifferentiatedPayments(interestRate float64, numberOfMonths float64, paymentAmount float64, startDate time.Time) models.PaymentPlan {
-	var baseFee = paymentAmount / numberOfMonths
-	var paymentPlan models.PaymentPlan
-	paymentPlan.Payments = [] models.Payment{}
-	paymentPlan.Amount = 0
+func CalculateCreditWithDifferentiatedPayments(paymentPlan models.PaymentPlan) models.PaymentPlan {
+	var baseFee =  paymentPlan.Amount /  float64(paymentPlan.Months)
 
-	for i := 0; i < int(numberOfMonths); i++ {
-		var currentMonth = startDate.AddDate(0,1,0)
-		var sum = baseFee + (paymentAmount - baseFee * float64(i)) * interestRate / 100 / 12
+	paymentPlan.Payments = [] models.Payment{}
+	paymentPlan.TotalPaymentAmount = 0
+	currentMonth := paymentPlan.StartDate
+
+	for i := 0; i < int(paymentPlan.Months); i++ {
+		currentMonth = currentMonth.AddDate(0,1,0)
+		var sum = baseFee + (paymentPlan.Amount - baseFee * float64(i)) * paymentPlan.InterestRate / 100 / 12
 		var payment = models.Payment{PaymentDate: currentMonth, PaymentAmount: sum}
 		paymentPlan.Payments = append(paymentPlan.Payments, payment)
+		paymentPlan.TotalPaymentAmount += sum
 	}
 	return paymentPlan
 }

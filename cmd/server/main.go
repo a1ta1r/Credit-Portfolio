@@ -22,15 +22,15 @@ func main() {
 		panic(codes.ConnectionError)
 	}
 
-	// db.AutoMigrate(
-	// 	&models.Bank{},
-	// 	&models.Currency{},
-	// 	&models.User{},
-	// 	&models.PaymentPlan{},
-	// 	&models.Payment{},
-	// 	&models.Income{},
-	// 	&models.Expense{},
-	// )
+	//db.AutoMigrate(
+	//	&models.Bank{},
+	//	&models.Currency{},
+	//	&models.User{},
+	//	&models.PaymentPlan{},
+	//	&models.Payment{},
+	//	&models.Income{},
+	//	&models.Expense{},
+	//)
 
 	storageContainer := storages.NewStorageContainer(db)
 
