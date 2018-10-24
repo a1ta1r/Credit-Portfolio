@@ -13,9 +13,9 @@ type User struct {
 	Email        string        `json:"email" gorm:"type:varchar(100);unique_index"`
 	Password     string        `json:"password,omitempty"`
 	Role         Role          `json:"role"`
-	PaymentPlans []PaymentPlan `json:"paymentPlans"`
+	PaymentPlans []PaymentPlan `json:"paymentPlans",default:"[]"`
 	Incomes      []Income      `json:"incomes",default:"[]"`
-	Expenses     []Expense     `json:"expenses"`
+	Expenses     []Expense     `json:"expenses",default:"[]"`
 }
 
 func (u User) GetHashedPassword() string {
