@@ -3,11 +3,15 @@ package main
 import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/app"
 	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
-	"github.com/a1ta1r/Credit-Portfolio/internal/controllers"
+	adsControllers "github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/controllers"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/auth"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/common"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/finance/controllers"
+	loanControllers "github.com/a1ta1r/Credit-Portfolio/internal/components/loans/controllers"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/services"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/system"
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
-	"github.com/a1ta1r/Credit-Portfolio/internal/models"
-	"github.com/a1ta1r/Credit-Portfolio/internal/services"
-	"github.com/a1ta1r/Credit-Portfolio/internal/storages"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"net/http"
@@ -24,22 +28,22 @@ func main() {
 
 	//app.SyncModelsWithSchema()
 
-	storageContainer := storages.NewStorageContainer(db)
+	storageContainer := common.NewStorageContainer(db)
 
 	//Add services to DI
 	userService := services.NewUserService(storageContainer)
 	agendaService := services.NewAgendaService(db)
 
-	healthController := controllers.NewHealthController(&db)
-	userController := controllers.NewUserController(userService)
+	healthController := system.NewHealthController(&db)
+	userController := loanControllers.NewUserController(userService)
 	commonController := controllers.NewCommonController(&db)
-	paymentPlanController := controllers.NewPaymentPlanController(&db, userService, services.PaymentPlanService{})
-	paymentController := controllers.NewPaymentController(&db)
-	incomeController := controllers.NewIncomeController(&db)
-	expenseController := controllers.NewExpenseController(&db)
-	agendaController := controllers.NewAgendaController(agendaService)
-	calculationController := controllers.NewCalculatorController(&db)
-	advertisementController := controllers.NewAdvertisementController(
+	paymentPlanController := loanControllers.NewPaymentPlanController(&db, userService)
+	paymentController := loanControllers.NewPaymentController(&db)
+	incomeController := loanControllers.NewIncomeController(&db)
+	expenseController := loanControllers.NewExpenseController(&db)
+	agendaController := loanControllers.NewAgendaController(agendaService)
+	calculationController := loanControllers.NewCalculatorController(&db)
+	advertisementController := adsControllers.NewAdvertisementController(
 		storageContainer.AdvertiserStorage,
 		storageContainer.AdvertisementStorage,
 		storageContainer.BannerStorage,
@@ -51,10 +55,10 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(handlers.CorsHandler())
 
-	jwtWrapper := app.NewJwtWrapper(userService)
-	userJwtMiddleware := jwtWrapper.GetJwtMiddleware(models.Basic)
-	adminJwtMiddleware := jwtWrapper.GetJwtMiddleware(models.Admin)
-	merchantJwtMiddleware := jwtWrapper.GetJwtMiddleware(models.Ads)
+	jwtWrapper := auth.NewJwtWrapper(userService)
+	userJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Basic)
+	adminJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Admin)
+	merchantJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Ads)
 
 	//basicAccess := router.Group("/")
 	basicAccess := router.Group("/", userJwtMiddleware.MiddlewareFunc())
@@ -146,7 +150,7 @@ func main() {
 	router.DELETE("/currency/:id", commonController.DeleteCurrency)
 	router.PUT("/currency/:id", commonController.UpdateCurrency)
 
-	router.NoRoute(controllers.NotFound)
+	router.NoRoute(handlers.NotFound)
 
 	router.Run()
 }

@@ -1,7 +1,9 @@
 package app
 
 import (
-	"github.com/a1ta1r/Credit-Portfolio/internal/models"
+	ae "github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
+	fe "github.com/a1ta1r/Credit-Portfolio/internal/components/finance/entities"
+	le "github.com/a1ta1r/Credit-Portfolio/internal/components/loans/entities"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -51,16 +53,16 @@ func SyncModelsWithSchema() {
 		panic(err)
 	}
 	db.AutoMigrate(
-		&models.Bank{},
-		&models.Currency{},
-		&models.User{},
-		&models.PaymentPlan{},
-		&models.Payment{},
-		&models.Income{},
-		&models.Expense{},
-		&models.BannerPlace{},
-		&models.Banner{},
-		&models.Advertiser{},
-		&models.Advertisement{},
+		&fe.Bank{},
+		&fe.Currency{},
+		&le.User{},
+		&le.PaymentPlan{},
+		&le.Payment{},
+		&le.Income{},
+		&le.Expense{},
+		&ae.BannerPlace{},
+		&ae.Banner{},
+		&ae.Advertiser{},
+		&ae.Advertisement{},
 	)
 }
