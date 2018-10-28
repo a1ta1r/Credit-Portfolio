@@ -1,4 +1,4 @@
-package controllers
+package mailer
 
 import (
 	"crypto/tls"
@@ -37,7 +37,7 @@ func (mail *Mail) BuildMessage() string {
 	return message
 }
 
-func sendMail(reciever string, username string, password string) bool {
+func SendMail(reciever string, username string, password string) bool {
 	mail := Mail{}
 	mail.senderId = "credit-portfolio@mail.ru"
 	mail.toIds = []string{reciever}

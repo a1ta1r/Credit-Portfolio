@@ -11,7 +11,7 @@ type Role int
 func (role Role) String() string {
 	names := [...]string{
 		"User",
-		"Admin",
+		"admin",
 		"Advertiser"}
 	if role < Basic || role > Ads {
 		return "Unknown"

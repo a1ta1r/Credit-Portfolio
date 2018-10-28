@@ -13,7 +13,7 @@ type Advertiser struct {
 	Notes       string    `json:"notes"`
 	Password    string    `json:"password,omitempty"`
 	Role        Role      `json:"role"`
-	isActive    bool
+	IsActive    bool      `json:"IsActive"`
 }
 
 func CreateAdvertiser(username string, email string, password string) Advertiser {
@@ -26,9 +26,9 @@ func CreateAdvertiser(username string, email string, password string) Advertiser
 }
 
 func (adv Advertiser) Disable() {
-	adv.isActive = false
+	adv.IsActive = false
 }
 
 func (adv Advertiser) Activate() {
-	adv.isActive = true
+	adv.IsActive = true
 }

@@ -9,6 +9,6 @@ type Advertisement struct {
 	DeletedAt    time.Time  `json:"deletedAt"`
 	Advertiser   Advertiser `json:"-"`
 	AdvertiserID uint       `json:"advertiserId"`
-	IsActive     bool       `json:"isActive"`
+	IsActive     bool       `json:"IsActive"`
 	Banners      []Banner   `json:"banners"`
 }

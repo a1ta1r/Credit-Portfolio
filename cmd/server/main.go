@@ -22,15 +22,7 @@ func main() {
 		panic(codes.ConnectionError)
 	}
 
-	//db.AutoMigrate(
-	//	&models.Bank{},
-	//	&models.Currency{},
-	//	&models.User{},
-	//	&models.PaymentPlan{},
-	//	&models.Payment{},
-	//	&models.Income{},
-	//	&models.Expense{},
-	//)
+	//app.SyncModelsWithSchema()
 
 	storageContainer := storages.NewStorageContainer(db)
 
@@ -47,6 +39,11 @@ func main() {
 	expenseController := controllers.NewExpenseController(&db)
 	agendaController := controllers.NewAgendaController(agendaService)
 	calculationController := controllers.NewCalculatorController(&db)
+	advertisementController := controllers.NewAdvertisementController(
+		storageContainer.AdvertiserStorage,
+		storageContainer.AdvertisementStorage,
+		storageContainer.BannerStorage,
+		storageContainer.BannerPlaceStorage)
 
 	router := gin.New()
 
@@ -59,13 +56,14 @@ func main() {
 	adminJwtMiddleware := jwtWrapper.GetJwtMiddleware(models.Admin)
 	merchantJwtMiddleware := jwtWrapper.GetJwtMiddleware(models.Ads)
 
+	//basicAccess := router.Group("/")
 	basicAccess := router.Group("/", userJwtMiddleware.MiddlewareFunc())
 	{
 		basicAccess.GET("/refreshToken", userJwtMiddleware.RefreshHandler)
 
-		//basicAccess.GET("/users", userController.GetUsers)
+		basicAccess.GET("/users", userController.GetUsers)
 		//basicAccess.GET("/users/:username", userController.GetUserByUsername)
-		//basicAccess.PUT("/users", userController.UpdateUser)
+		//basicAccess.PUT("/users", userController.UpdateAdvertiser)
 		//basicAccess.DELETE("/users", userController.DeleteUser)
 		//Вроде как юзер не должен напрямую это уметь.
 		basicAccess.GET("/user", userController.GetUserByJWT)
@@ -98,6 +96,23 @@ func main() {
 		basicAccess.POST("/calculate", calculationController.CalculateCredit)
 
 		basicAccess.GET("/agenda", agendaController.GetAgendaElements)
+
+		//TODO убрать рекламщиков в вип доступ для админа
+		advertisers := basicAccess.Group("advertisers/")
+		{
+			advertisers.GET(":id", advertisementController.GetAdvertiser)
+			advertisers.GET("/", advertisementController.GetAdvertisers)
+			advertisers.POST("/", advertisementController.AddAdvertiser)
+			advertisers.PUT(":id", advertisementController.UpdateAdvertiser)
+			advertisers.DELETE(":id", advertisementController.DeleteAdvertiser)
+			advertisements := advertisers.Group(":id/ads/")
+			{
+				advertisements.GET("/", advertisementController.GetAdvertisementsByAdvertiser)
+				advertisements.POST("/", advertisementController.AddAdvertisement)
+				advertisements.GET("/:adsid/banners", advertisementController.GetBannersByAdvertisement)
+			}
+
+		}
 	}
 
 	private := func(c *gin.Context) {
