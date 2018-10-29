@@ -22,8 +22,6 @@ import (
 )
 
 func main() {
-	//godotenv.Load()
-
 	godotenv.Load()
 
 	db, err := app.GetConnection()
