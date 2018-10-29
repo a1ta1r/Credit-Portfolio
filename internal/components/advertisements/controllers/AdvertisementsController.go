@@ -31,9 +31,8 @@ func NewAdvertisementController(
 	}
 }
 
-//
 // @Summary Получить список всех рекламодателей
-// @Description Список рекламодателей
+// @Description Метод возвращает список всех имеющихся в системе рекламодателей
 // @Produce  json
 // @Success 200 "{"advertisers":[],"count":0,"status":"OK"}"
 // @Router /advertisers [get]
@@ -47,6 +46,13 @@ func (ac AdvertisementsController) GetAdvertisers(c *gin.Context) {
 	})
 }
 
+// @Summary Получить рекламодателя по ID
+// @Description Метод возвращает рекламодателя по его ID
+// @Produce  json
+// @Param id path int true "ID рекламодателя"
+// @Success 200 {object} entities.Advertiser "{"advertiser": entities.Advertiser}"
+// @Failure 404 "{"message": "resource not found"}"
+// @Router /advertisers/{id} [get]
 func (ac AdvertisementsController) GetAdvertiser(c *gin.Context) {
 	var advertiser entities.Advertiser
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -62,12 +68,19 @@ func (ac AdvertisementsController) GetAdvertiser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"advertiser": advertiser})
 }
 
+// @Summary Добавить нового рекламодателя
+// @Description Метод добавляет в систему нового рекламодателя с заданными параметрами
+// @Accept json
+// @Produce  json
+// @Param advertiser body entities.Advertiser true "Данные о рекламодателе"
+// @Success 200 {object} entities.Advertiser "{"advertiser": entities.Advertiser}"
+// @Router /advertisers [post]
 func (ac AdvertisementsController) AddAdvertiser(c *gin.Context) {
 	var advertiser entities.Advertiser
 	c.BindJSON(&advertiser)
 	err := ac.advertiserStorage.CreateAdvertiser(advertiser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": codes.InternalError})
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": codes.ResourceExists})
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"advertiser": advertiser})

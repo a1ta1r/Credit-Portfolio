@@ -1,13 +1,80 @@
+definitions:
+  entities.Advertiser:
+    properties:
+      IsActive:
+        type: boolean
+      contactInfo:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      notes:
+        type: string
+      password:
+        type: string
+      role:
+        type: integer
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
   license: {}
 paths:
   /advertisers:
     get:
-      description: Список рекламодателей
+      description: Метод возвращает список всех имеющихся в системе рекламодателей
       produces:
       - application/json
       responses:
         "200":
           description: '{"advertisers":[],"count":0,"status":"OK"}'
       summary: Получить список всех рекламодателей
+    post:
+      consumes:
+      - application/json
+      description: Метод добавляет в систему нового рекламодателя с заданными параметрами
+      parameters:
+      - description: Данные о рекламодателе
+        in: body
+        name: advertiser
+        required: true
+        schema:
+          $ref: '#/definitions/entities.Advertiser'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"advertiser": entities.Advertiser}'
+          schema:
+            $ref: '#/definitions/entities.Advertiser'
+            type: object
+      summary: Добавить нового рекламодателя
+  /advertisers/{id}:
+    get:
+      description: Метод возвращает рекламодателя по его ID
+      parameters:
+      - description: ID рекламодателя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"advertiser": entities.Advertiser}'
+          schema:
+            $ref: '#/definitions/entities.Advertiser'
+            type: object
+        "404":
+          description: '{"message": "resource not found"}'
+      summary: Получить рекламодателя по ID

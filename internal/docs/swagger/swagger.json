@@ -6,7 +6,7 @@
     "paths": {
         "/advertisers": {
             "get": {
-                "description": "Список рекламодателей",
+                "description": "Метод возвращает список всех имеющихся в системе рекламодателей",
                 "produces": [
                     "application/json"
                 ],
@@ -15,6 +15,107 @@
                     "200": {
                         "description": "{\"advertisers\":[],\"count\":0,\"status\":\"OK\"}"
                     }
+                }
+            },
+            "post": {
+                "description": "Метод добавляет в систему нового рекламодателя с заданными параметрами",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Добавить нового рекламодателя",
+                "parameters": [
+                    {
+                        "description": "Данные о рекламодателе",
+                        "name": "advertiser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/entities.Advertiser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"advertiser\": entities.Advertiser}",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/entities.Advertiser"
+                        }
+                    }
+                }
+            }
+        },
+        "/advertisers/{id}": {
+            "get": {
+                "description": "Метод возвращает рекламодателя по его ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Получить рекламодателя по ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID рекламодателя",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"advertiser\": entities.Advertiser}",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/entities.Advertiser"
+                        }
+                    },
+                    "404": {
+                        "description": "{\"message\": \"resource not found\"}"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entities.Advertiser": {
+            "type": "object",
+            "properties": {
+                "IsActive": {
+                    "type": "boolean"
+                },
+                "contactInfo": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }
