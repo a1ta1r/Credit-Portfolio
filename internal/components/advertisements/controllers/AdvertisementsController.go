@@ -31,6 +31,12 @@ func NewAdvertisementController(
 	}
 }
 
+//
+// @Summary Получить список всех рекламодателей
+// @Description Список рекламодателей
+// @Produce  json
+// @Success 200 "{"advertisers":[],"count":0,"status":"OK"}"
+// @Router /advertisers [get]
 func (ac AdvertisementsController) GetAdvertisers(c *gin.Context) {
 	var advertisers []entities.Advertiser
 	advertisers, _ = ac.advertiserStorage.GetAdvertisers()

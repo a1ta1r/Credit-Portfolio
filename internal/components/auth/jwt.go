@@ -19,7 +19,7 @@ func NewJwtWrapper(userService services.UserService) JwtWrapper {
 }
 
 func (w JwtWrapper) GetJwtMiddleware(role roles.Role) jwt.GinJWTMiddleware {
-	var authFunc = func(username string, password string, c *gin.Context) (string, bool) { return "", false }
+	var authFunc = func(c *gin.Context) (interface{}, error) { return "", nil }
 	switch role {
 	case roles.Basic:
 		authFunc = w.userRoleAuthFunc
@@ -42,45 +42,54 @@ func (w JwtWrapper) GetJwtMiddleware(role roles.Role) jwt.GinJWTMiddleware {
 	return jwtMiddleware
 }
 
-func (w JwtWrapper) userRoleAuthFunc(username string, password string, c *gin.Context) (string, bool) {
+func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	var users []entities.User
+	username := c.Param("username")
+	password := c.Param("password")
 	users = w.userService.GetUsers()
+	var err error = nil
 	for i := 0; i < len(users); i++ {
-		var err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
+		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
 		if username == users[i].Username && err == nil {
-			return username, true
+			return username, err
 		}
 	}
-	return "", false
+	return "", err
 }
 
-func (w JwtWrapper) adminRoleAuthFunc(username string, password string, c *gin.Context) (string, bool) {
+func (w JwtWrapper) adminRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	var users []entities.User
 	users = w.userService.GetUsers()
+	var err error = nil
+	username := c.Param("username")
+	password := c.Param("password")
 	for i := 0; i < len(users); i++ {
-		var err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
-		if username == users[i].Username && users[i].Role == roles.Ads && err == nil {
-			return username, true
+		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
+		if username == users[i].Username && users[i].Role == roles.Admin && err == nil {
+			return username, err
 		}
 	}
-	return "", false
+	return "", err
 }
 
-func (w JwtWrapper) merchantRoleAuthFunc(username string, password string, c *gin.Context) (string, bool) {
+func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	var users []entities.User
 	users = w.userService.GetUsers()
+	username := c.Param("username")
+	password := c.Param("password")
+	var err error = nil
 	for i := 0; i < len(users); i++ {
-		var err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
+		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
 		if username == users[i].Username && users[i].Role == roles.Ads && err == nil {
-			return username, true
+			return username, err
 		}
 	}
-	return "", false
+	return "", err
 }
 
-func (w *JwtWrapper) Payload(username string) map[string]interface{} {
-	var user = w.userService.GetUserByUsername(username)
-	return map[string]interface{}{
+func (w *JwtWrapper) Payload(username interface{}) jwt.MapClaims {
+	var user = w.userService.GetUserByUsername(username.(string))
+	return jwt.MapClaims{
 		"username": user.Username,
 		"role":     user.Role,
 		"user_id":  user.ID,

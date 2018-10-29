@@ -6,13 +6,13 @@ import (
 	"net/http"
 )
 
-type healthController struct {
+type HealthController struct {
 	gormDB gorm.DB
 }
 
 //checks if services are still alive and returns 200
 //returns 503 otherwise
-func (hc healthController) HealthCheck(c *gin.Context) {
+func (hc HealthController) HealthCheck(c *gin.Context) {
 	if hc.gormDB.DB() == nil || hc.gormDB.DB().Ping() != nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{
 			"message": "Internal error occurred",
@@ -24,8 +24,8 @@ func (hc healthController) HealthCheck(c *gin.Context) {
 	}
 }
 
-func NewHealthController(db *gorm.DB) healthController {
-	return healthController{
+func NewHealthController(db *gorm.DB) HealthController {
+	return HealthController{
 		gormDB: *db,
 	}
 }

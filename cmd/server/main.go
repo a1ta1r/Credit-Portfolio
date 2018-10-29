@@ -14,10 +14,16 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"net/http"
+
+	_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
 )
 
 func main() {
+	//godotenv.Load()
+
 	godotenv.Load()
 
 	db, err := app.GetConnection()
@@ -59,6 +65,8 @@ func main() {
 	userJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Basic)
 	adminJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Admin)
 	merchantJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Ads)
+
+	router.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	//basicAccess := router.Group("/")
 	basicAccess := router.Group("/", userJwtMiddleware.MiddlewareFunc())

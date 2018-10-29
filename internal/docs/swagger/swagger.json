@@ -1,0 +1,22 @@
+{
+    "info": {
+        "contact": {},
+        "license": {}
+    },
+    "paths": {
+        "/advertisers": {
+            "get": {
+                "description": "Список рекламодателей",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Получить список всех рекламодателей",
+                "responses": {
+                    "200": {
+                        "description": "{\"advertisers\":[],\"count\":0,\"status\":\"OK\"}"
+                    }
+                }
+            }
+        }
+    }
+}
