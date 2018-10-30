@@ -1,8 +1,14 @@
 {
+    "swagger": "2.0",
     "info": {
+        "description": "{{.Description}}",
+        "title": "{{.Title}}",
         "contact": {},
-        "license": {}
+        "license": {},
+        "version": "{{.Version}}"
     },
+    "host": "{{.Host}}",
+    "basePath": "{{.BasePath}}",
     "paths": {
         "/advertisers": {
             "get": {
@@ -91,9 +97,6 @@
                     "type": "string"
                 },
                 "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
                     "type": "string"
                 },
                 "email": {

@@ -8,8 +8,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 
-	//Required by GORM to run over MSSQL and Postgres databases
-	_ "github.com/jinzhu/gorm/dialects/mssql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
@@ -18,9 +16,7 @@ var sqlConn *gorm.DB
 // GetConnection returns Connection to an MSSQL database using GORM
 func GetConnection() (gorm.DB, error) {
 	if sqlConn == nil {
-		if conn, err := getMssql(); err == nil {
-			sqlConn = &conn
-		} else if conn, err := getPostgres(); err == nil {
+		if conn, err := getPostgres(); err == nil {
 			sqlConn = &conn
 		} else {
 			return gorm.DB{}, err
@@ -60,9 +56,29 @@ func SyncModelsWithSchema() {
 		&le.Payment{},
 		&le.Income{},
 		&le.Expense{},
-		&ae.BannerPlace{},
-		&ae.Banner{},
 		&ae.Advertiser{},
 		&ae.Advertisement{},
+		&ae.BannerPlace{},
+		&ae.Banner{},
+	)
+}
+
+func DropAllTables() {
+	db, err := GetConnection()
+	if err != nil {
+		panic(err)
+	}
+	db.DropTable(
+		&fe.Bank{},
+		&fe.Currency{},
+		&le.User{},
+		&le.PaymentPlan{},
+		&le.Payment{},
+		&le.Income{},
+		&le.Expense{},
+		&ae.Advertiser{},
+		&ae.Advertisement{},
+		&ae.BannerPlace{},
+		&ae.Banner{},
 	)
 }

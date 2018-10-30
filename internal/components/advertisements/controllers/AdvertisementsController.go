@@ -4,6 +4,7 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/storages"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
@@ -54,13 +55,12 @@ func (ac AdvertisementsController) GetAdvertisers(c *gin.Context) {
 // @Failure 404 "{"message": "resource not found"}"
 // @Router /advertisers/{id} [get]
 func (ac AdvertisementsController) GetAdvertiser(c *gin.Context) {
-	var advertiser entities.Advertiser
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	advertiser, _ = ac.advertiserStorage.GetAdvertiser(uint(id))
+	advertiser, err := ac.advertiserStorage.GetAdvertiser(uint(id))
 	if advertiser.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
@@ -78,7 +78,9 @@ func (ac AdvertisementsController) GetAdvertiser(c *gin.Context) {
 func (ac AdvertisementsController) AddAdvertiser(c *gin.Context) {
 	var advertiser entities.Advertiser
 	c.BindJSON(&advertiser)
-	err := ac.advertiserStorage.CreateAdvertiser(advertiser)
+	advertiser.Role = roles.Ads
+	advertiser.Password = advertiser.GetHashedPassword()
+	err := ac.advertiserStorage.CreateAdvertiser(&advertiser)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": codes.ResourceExists})
 		return
@@ -157,7 +159,7 @@ func (ac AdvertisementsController) GetAdvertisement(c *gin.Context) {
 func (ac AdvertisementsController) AddAdvertisement(c *gin.Context) {
 	var advertiser entities.Advertiser
 	c.BindJSON(&advertiser)
-	err := ac.advertiserStorage.CreateAdvertiser(advertiser)
+	err := ac.advertiserStorage.CreateAdvertiser(&advertiser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": codes.InternalError})
 		return

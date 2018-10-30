@@ -6,7 +6,6 @@ type Banner struct {
 	ID                  uint        `gorm:"primary_key" json:"id"`
 	CreatedAt           time.Time   `json:"createdAt"`
 	UpdatedAt           time.Time   `json:"updatedAt"`
-	DeletedAt           time.Time   `json:"deletedAt"`
 	PictureUrl          string      `json:"pictureUrl"`
 	Text                string      `json:"text"`
 	UniqueViewsRequired uint        `json:"uniqueViewsRequired"`

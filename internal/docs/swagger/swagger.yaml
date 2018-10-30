@@ -1,3 +1,4 @@
+basePath: '{{.BasePath}}'
 definitions:
   entities.Advertiser:
     properties:
@@ -6,8 +7,6 @@ definitions:
       contactInfo:
         type: string
       createdAt:
-        type: string
-      deletedAt:
         type: string
       email:
         type: string
@@ -24,9 +23,13 @@ definitions:
       username:
         type: string
     type: object
+host: '{{.Host}}'
 info:
   contact: {}
+  description: '{{.Description}}'
   license: {}
+  title: '{{.Title}}'
+  version: '{{.Version}}'
 paths:
   /advertisers:
     get:
@@ -78,3 +81,4 @@ paths:
         "404":
           description: '{"message": "resource not found"}'
       summary: Получить рекламодателя по ID
+swagger: "2.0"
