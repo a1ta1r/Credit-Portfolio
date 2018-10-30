@@ -5,6 +5,7 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/storages"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
+	_ "github.com/a1ta1r/Credit-Portfolio/internal/specification/responses"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
@@ -35,11 +36,14 @@ func NewAdvertisementController(
 // @Summary Получить список всех рекламодателей
 // @Description Метод возвращает список всех имеющихся в системе рекламодателей
 // @Produce  json
-// @Success 200 "{"advertisers":[],"count":0,"status":"OK"}"
+// @Success 200 {object} responses.AllAdvertisers
 // @Router /advertisers [get]
 func (ac AdvertisementsController) GetAdvertisers(c *gin.Context) {
 	var advertisers []entities.Advertiser
 	advertisers, _ = ac.advertiserStorage.GetAdvertisers()
+	for i := 0; i < len(advertisers); i++ {
+		advertisers[i].Password = ""
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":      "OK",
 		"count":       len(advertisers),
@@ -65,6 +69,7 @@ func (ac AdvertisementsController) GetAdvertiser(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
 	}
+	advertiser.Password = ""
 	c.JSON(http.StatusOK, gin.H{"advertiser": advertiser})
 }
 

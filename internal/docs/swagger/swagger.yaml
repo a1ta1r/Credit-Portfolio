@@ -7,6 +7,7 @@ definitions:
       contactInfo:
         type: string
       createdAt:
+        example: "2018-10-30T19:43:15.251038Z"
         type: string
       email:
         type: string
@@ -19,8 +20,22 @@ definitions:
       role:
         type: integer
       updatedAt:
+        example: "2018-10-30T19:43:15.251038Z"
         type: string
       username:
+        type: string
+    type: object
+  responses.AllAdvertisers:
+    properties:
+      advertisers:
+        items:
+          $ref: '#/definitions/entities.Advertiser'
+        type: array
+      count:
+        example: 0
+        type: integer
+      status:
+        example: OK
         type: string
     type: object
 host: '{{.Host}}'
@@ -38,7 +53,10 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"advertisers":[],"count":0,"status":"OK"}'
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.AllAdvertisers'
+            type: object
       summary: Получить список всех рекламодателей
     post:
       consumes:

@@ -8,8 +8,8 @@ import (
 
 type Advertiser struct {
 	ID          uint       `gorm:"primary_key" json:"id"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   time.Time  `json:"updatedAt"`
+	CreatedAt   time.Time  `json:"createdAt" example:"2018-10-30T19:43:15.251038Z"`
+	UpdatedAt   time.Time  `json:"updatedAt" example:"2018-10-30T19:43:15.251038Z"`
 	Username    string     `json:"username" gorm:"type:varchar(100);unique_index"`
 	Email       string     `json:"email" gorm:"type:varchar(100);unique_index"`
 	ContactInfo string     `json:"contactInfo"`

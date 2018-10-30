@@ -19,7 +19,11 @@
                 "summary": "Получить список всех рекламодателей",
                 "responses": {
                     "200": {
-                        "description": "{\"advertisers\":[],\"count\":0,\"status\":\"OK\"}"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/responses.AllAdvertisers"
+                        }
                     }
                 }
             },
@@ -97,7 +101,8 @@
                     "type": "string"
                 },
                 "createdAt": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2018-10-30T19:43:15.251038Z"
                 },
                 "email": {
                     "type": "string"
@@ -115,10 +120,30 @@
                     "type": "integer"
                 },
                 "updatedAt": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2018-10-30T19:43:15.251038Z"
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "responses.AllAdvertisers": {
+            "type": "object",
+            "properties": {
+                "advertisers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.Advertiser"
+                    }
+                },
+                "count": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "status": {
+                    "type": "string",
+                    "example": "OK"
                 }
             }
         }
