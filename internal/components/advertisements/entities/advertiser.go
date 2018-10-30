@@ -16,7 +16,7 @@ type Advertiser struct {
 	Notes       string     `json:"notes"`
 	Password    string     `json:"password,omitempty"`
 	Role        roles.Role `json:"role"`
-	IsActive    bool       `json:"IsActive"`
+	IsActive    bool       `json:"isActive"`
 }
 
 func (adv Advertiser) Disable() {
