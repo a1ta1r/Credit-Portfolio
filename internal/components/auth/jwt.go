@@ -44,8 +44,10 @@ func (w JwtWrapper) GetJwtMiddleware(role roles.Role) jwt.GinJWTMiddleware {
 
 func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	var users []entities.User
-	username := c.Param("username")
-	password := c.Param("password")
+	var testUser entities.User
+	c.BindJSON(&testUser)
+	username := testUser.Username
+	password := testUser.Password
 	users = w.userService.GetUsers()
 	var err error = nil
 	for i := 0; i < len(users); i++ {
@@ -61,8 +63,10 @@ func (w JwtWrapper) adminRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	var users []entities.User
 	users = w.userService.GetUsers()
 	var err error = nil
-	username := c.Param("username")
-	password := c.Param("password")
+	var testUser entities.User
+	c.BindJSON(&testUser)
+	username := testUser.Username
+	password := testUser.Password
 	for i := 0; i < len(users); i++ {
 		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
 		if username == users[i].Username && users[i].Role == roles.Admin && err == nil {
@@ -75,8 +79,10 @@ func (w JwtWrapper) adminRoleAuthFunc(c *gin.Context) (interface{}, error) {
 func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	var users []entities.User
 	users = w.userService.GetUsers()
-	username := c.Param("username")
-	password := c.Param("password")
+	var testUser entities.User
+	c.BindJSON(&testUser)
+	username := testUser.Username
+	password := testUser.Password
 	var err error = nil
 	for i := 0; i < len(users); i++ {
 		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
