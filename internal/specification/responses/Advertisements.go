@@ -9,6 +9,6 @@ type AllAdvertisements struct {
 }
 
 type OneAdvertisement struct {
-	advertisement entities.Advertisement `json:"advertisement"`
+	Advertisement entities.Advertisement `json:"Advertisement"`
 }
 

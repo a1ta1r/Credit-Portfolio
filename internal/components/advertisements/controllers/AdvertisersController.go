@@ -92,6 +92,7 @@ func (ac AdvertiserController) AddAdvertiser(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": codes.ResourceExists})
 		return
 	}
+	advertiser.Password = ""
 	c.JSON(http.StatusCreated, gin.H{"advertiser": advertiser})
 }
 
@@ -140,6 +141,7 @@ func (ac AdvertiserController) UpdateAdvertiser(c *gin.Context) {
 
 	c.ShouldBindWith(&advertiser, binding.JSON)
 	_ = ac.advertiserStorage.UpdateAdvertiser(&advertiser)
+	advertiser.Password = ""
 	c.JSON(http.StatusOK, gin.H{
 		"status":     "OK",
 		"advertiser": advertiser,
