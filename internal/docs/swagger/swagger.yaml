@@ -113,136 +113,7 @@ info:
   title: Loan Portfolio API doc
   version: "0.5"
 paths:
-  /ads:
-    get:
-      description: Метод возвращает данные о всех рекламных объявлениях
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.AllAdvertisements'
-            type: object
-        "422": {}
-      summary: Получить вообще все рекламные объявления
-      tags:
-      - Advertisements
-    post:
-      consumes:
-      - application/json
-      description: Метод добавляет новое рекламне объявление с заданными параметрами
-      parameters:
-      - description: Данные о рекламном объявлении
-        in: body
-        name: advertisement
-        required: true
-        schema:
-          $ref: '#/definitions/entities.Advertisement'
-          type: object
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/responses.OneAdvertisement'
-            type: object
-        "422": {}
-      summary: Добавить рекламное объявление
-      tags:
-      - Advertisements
-  /ads/{id}:
-    delete:
-      description: Метод удаляет рекламне объявление с заданным ID
-      parameters:
-      - description: ID рекламного объявления
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200": {}
-        "422": {}
-      summary: Удалить рекламное объявление
-      tags:
-      - Advertisements
-    get:
-      description: Метод возвращает данные рекламном объявлении с данным ID
-      parameters:
-      - description: ID рекламного объявления
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.OneAdvertisement'
-            type: object
-        "404": {}
-        "422": {}
-      summary: Получить рекламное объявление по ID
-      tags:
-      - Advertisements
-    put:
-      consumes:
-      - application/json
-      description: Метод обновляет рекламне объявление с заданным ID
-      parameters:
-      - description: ID рекламного объявления
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Новые данные о рекламном объявлении
-        in: body
-        name: advertisement
-        required: true
-        schema:
-          $ref: '#/definitions/entities.Advertisement'
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.OneAdvertisement'
-            type: object
-        "404": {}
-        "422": {}
-      summary: Обновить рекламное объявление
-      tags:
-      - Advertisements
-  /advertiser/{id}/ads:
-    get:
-      description: Метод возвращает данные о рекламных объявлениях рекламодателя с
-        заданным ID
-      parameters:
-      - description: ID рекламодателя
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.AllAdvertisements'
-            type: object
-        "422": {}
-      summary: Получить рекламные объявления рекламодателя
-      tags:
-      - Advertisements
-  /advertisers:
+  /partners:
     get:
       description: Метод возвращает список всех имеющихся в системе рекламодателей
       produces:
@@ -280,7 +151,7 @@ paths:
       summary: Добавить нового рекламодателя
       tags:
       - Advertisers
-  /advertisers/{id}:
+  /partners/{id}:
     delete:
       description: Метод удаляет из системы рекламодателя с заданным ID
       parameters:
@@ -349,4 +220,133 @@ paths:
       summary: Обновить рекламодателя
       tags:
       - Advertisers
+  /partners/{id}/promotions:
+    get:
+      description: Метод возвращает данные о рекламных объявлениях рекламодателя с
+        заданным ID
+      parameters:
+      - description: ID рекламодателя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.AllAdvertisements'
+            type: object
+        "422": {}
+      summary: Получить рекламные объявления рекламодателя
+      tags:
+      - Advertisements
+  /promotions:
+    get:
+      description: Метод возвращает данные о всех рекламных объявлениях
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.AllAdvertisements'
+            type: object
+        "422": {}
+      summary: Получить вообще все рекламные объявления
+      tags:
+      - Advertisements
+    post:
+      consumes:
+      - application/json
+      description: Метод добавляет новое рекламне объявление с заданными параметрами
+      parameters:
+      - description: Данные о рекламном объявлении
+        in: body
+        name: advertisement
+        required: true
+        schema:
+          $ref: '#/definitions/entities.Advertisement'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.OneAdvertisement'
+            type: object
+        "422": {}
+      summary: Добавить рекламное объявление
+      tags:
+      - Advertisements
+  /promotions/{id}:
+    delete:
+      description: Метод удаляет рекламне объявление с заданным ID
+      parameters:
+      - description: ID рекламного объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "422": {}
+      summary: Удалить рекламное объявление
+      tags:
+      - Advertisements
+    get:
+      description: Метод возвращает данные рекламном объявлении с данным ID
+      parameters:
+      - description: ID рекламного объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.OneAdvertisement'
+            type: object
+        "404": {}
+        "422": {}
+      summary: Получить рекламное объявление по ID
+      tags:
+      - Advertisements
+    put:
+      consumes:
+      - application/json
+      description: Метод обновляет рекламне объявление с заданным ID
+      parameters:
+      - description: ID рекламного объявления
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые данные о рекламном объявлении
+        in: body
+        name: advertisement
+        required: true
+        schema:
+          $ref: '#/definitions/entities.Advertisement'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.OneAdvertisement'
+            type: object
+        "404": {}
+        "422": {}
+      summary: Обновить рекламное объявление
+      tags:
+      - Advertisements
 swagger: "2.0"

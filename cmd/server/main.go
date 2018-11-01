@@ -120,18 +120,18 @@ func main() {
 	}
 
 	//TODO убрать рекламщиков в вип доступ для админа
-	advertisers := router.Group("/advertisers")
+	advertisers := router.Group("/partners")
 	{
 		advertisers.GET("/:id", advertiserController.GetAdvertiser)
 		advertisers.GET("", advertiserController.GetAdvertisers)
 		advertisers.POST("", advertiserController.AddAdvertiser)
 		advertisers.PUT("/:id", advertiserController.UpdateAdvertiser)
 		advertisers.DELETE("/:id", advertiserController.DeleteAdvertiser)
-		advertisers.GET("/:id/ads", advertisementController.GetAdvertisementsByAdvertiser)
+		advertisers.GET("/:id/promotions", advertisementController.GetAdvertisementsByAdvertiser)
 
 	}
 
-	advertisements := router.Group("/ads")
+	advertisements := router.Group("/promotions")
 	{
 		advertisements.GET("/:id", advertisementController.GetAdvertisement)
 		advertisements.GET("", advertisementController.GetAdvertisements)

@@ -35,7 +35,7 @@ func NewAdvertiserController(
 // @Description Метод возвращает список всех имеющихся в системе рекламодателей
 // @Produce  json
 // @Success 200 {object} responses.AllAdvertisers
-// @Router /advertisers [get]
+// @Router /partners [get]
 func (ac AdvertiserController) GetAdvertisers(c *gin.Context) {
 	var advertisers []entities.Advertiser
 	advertisers, _ = ac.advertiserStorage.GetAdvertisers()
@@ -57,7 +57,7 @@ func (ac AdvertiserController) GetAdvertisers(c *gin.Context) {
 // @Success 200 {object} responses.OneAdvertiser
 // @Failure 404 "{"message": "resource not found"}"
 // @Failure 422
-// @Router /advertisers/{id} [get]
+// @Router /partners/{id} [get]
 func (ac AdvertiserController) GetAdvertiser(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -81,7 +81,7 @@ func (ac AdvertiserController) GetAdvertiser(c *gin.Context) {
 // @Param advertiser body entities.Advertiser true "Данные о рекламодателе"
 // @Success 201 {object} responses.OneAdvertiser
 // @Failure 422
-// @Router /advertisers [post]
+// @Router /partners [post]
 func (ac AdvertiserController) AddAdvertiser(c *gin.Context) {
 	var advertiser entities.Advertiser
 	c.BindJSON(&advertiser)
@@ -102,7 +102,7 @@ func (ac AdvertiserController) AddAdvertiser(c *gin.Context) {
 // @Param id path int true "ID рекламодателя"
 // @Success 200
 // @Failure 422
-// @Router /advertisers/{id} [delete]
+// @Router /partners/{id} [delete]
 func (ac AdvertiserController) DeleteAdvertiser(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -124,7 +124,7 @@ func (ac AdvertiserController) DeleteAdvertiser(c *gin.Context) {
 // @Success 200 {object} responses.OneAdvertiser
 // @Failure 404
 // @Failure 422
-// @Router /advertisers/{id} [put]
+// @Router /partners/{id} [put]
 func (ac AdvertiserController) UpdateAdvertiser(c *gin.Context) {
 	var advertiser entities.Advertiser
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)

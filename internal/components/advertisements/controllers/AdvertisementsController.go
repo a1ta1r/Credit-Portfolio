@@ -25,7 +25,7 @@ func NewAdvertisementController(storage storages.AdvertisementStorage) Advertise
 // @Param id path int true "ID рекламодателя"
 // @Success 200 {object} responses.AllAdvertisements
 // @Failure 422
-// @Router /advertiser/{id}/ads [get]
+// @Router /partners/{id}/promotions [get]
 func (ac AdvertisementController) GetAdvertisementsByAdvertiser(c *gin.Context) {
 	var advertisements []entities.Advertisement
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -47,7 +47,7 @@ func (ac AdvertisementController) GetAdvertisementsByAdvertiser(c *gin.Context) 
 // @Produce  json
 // @Success 200 {object} responses.AllAdvertisements
 // @Failure 422
-// @Router /ads [get]
+// @Router /promotions [get]
 func (ac AdvertisementController) GetAdvertisements(c *gin.Context) {
 	var advertisements []entities.Advertisement
 	advertisements, _ = ac.advertisementStorage.GetAdvertisements()
@@ -66,7 +66,7 @@ func (ac AdvertisementController) GetAdvertisements(c *gin.Context) {
 // @Success 200 {object} responses.OneAdvertisement
 // @Failure 404
 // @Failure 422
-// @Router /ads/{id} [get]
+// @Router /promotions/{id} [get]
 func (ac AdvertisementController) GetAdvertisement(c *gin.Context) {
 	var advertisement entities.Advertisement
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -90,7 +90,7 @@ func (ac AdvertisementController) GetAdvertisement(c *gin.Context) {
 // @Param advertisement body entities.Advertisement true "Данные о рекламном объявлении"
 // @Success 201 {object} responses.OneAdvertisement
 // @Failure 422
-// @Router /ads [post]
+// @Router /promotions [post]
 func (ac AdvertisementController) AddAdvertisement(c *gin.Context) {
 	var advertisement entities.Advertisement
 	c.BindJSON(&advertisement)
@@ -109,7 +109,7 @@ func (ac AdvertisementController) AddAdvertisement(c *gin.Context) {
 // @Param id path int true "ID рекламного объявления"
 // @Success 200
 // @Failure 422
-// @Router /ads/{id} [delete]
+// @Router /promotions/{id} [delete]
 func (ac AdvertisementController) DeleteAdvertisement(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -131,7 +131,7 @@ func (ac AdvertisementController) DeleteAdvertisement(c *gin.Context) {
 // @Success 200 {object} responses.OneAdvertisement
 // @Failure 404
 // @Failure 422
-// @Router /ads/{id} [put]
+// @Router /promotions/{id} [put]
 func (ac AdvertisementController) UpdateAdvertisement(c *gin.Context) {
 	var advertisement entities.Advertisement
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
