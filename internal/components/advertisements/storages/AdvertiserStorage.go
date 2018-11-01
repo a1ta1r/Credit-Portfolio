@@ -21,11 +21,11 @@ func (as AdvertiserStorage) GetAdvertisers() ([]entities.Advertiser, error) {
 	return advertisers, err
 }
 
-func (as AdvertiserStorage) CreateAdvertiser(advertiser entities.Advertiser) error {
+func (as AdvertiserStorage) CreateAdvertiser(advertiser *entities.Advertiser) error {
 	return as.DB.Create(&advertiser).Error
 }
 
-func (as AdvertiserStorage) UpdateAdvertiser(advertiser entities.Advertiser) error {
+func (as AdvertiserStorage) UpdateAdvertiser(advertiser *entities.Advertiser) error {
 	return as.DB.Save(&advertiser).Error
 }
 

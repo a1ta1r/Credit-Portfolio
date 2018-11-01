@@ -94,7 +94,7 @@ func (ac AdvertisementController) GetAdvertisement(c *gin.Context) {
 func (ac AdvertisementController) AddAdvertisement(c *gin.Context) {
 	var advertisement entities.Advertisement
 	c.BindJSON(&advertisement)
-	err := ac.advertisementStorage.CreateAdvertisement(advertisement)
+	err := ac.advertisementStorage.CreateAdvertisement(&advertisement)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": codes.ResourceExists})
 		return
@@ -146,7 +146,7 @@ func (ac AdvertisementController) UpdateAdvertisement(c *gin.Context) {
 	}
 
 	c.ShouldBindWith(&advertisement, binding.JSON)
-	_ = ac.advertisementStorage.UpdateAdvertisement(advertisement)
+	_ = ac.advertisementStorage.UpdateAdvertisement(&advertisement)
 	c.JSON(http.StatusOK, gin.H{
 		"status":     "OK",
 		"advertisement": advertisement,

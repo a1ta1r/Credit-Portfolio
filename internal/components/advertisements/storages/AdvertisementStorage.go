@@ -27,11 +27,11 @@ func (as AdvertisementStorage) GetAdvertisementsByAdvertiser(id uint) ([]entitie
 	return advertisements, err
 }
 
-func (as AdvertisementStorage) CreateAdvertisement(advertisement entities.Advertisement) error {
+func (as AdvertisementStorage) CreateAdvertisement(advertisement *entities.Advertisement) error {
 	return as.DB.Create(advertisement).Error
 }
 
-func (as AdvertisementStorage) UpdateAdvertisement(advertisement entities.Advertisement) error {
+func (as AdvertisementStorage) UpdateAdvertisement(advertisement *entities.Advertisement) error {
 	return as.DB.Save(advertisement).Error
 }
 
