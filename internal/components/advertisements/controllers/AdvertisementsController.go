@@ -4,124 +4,29 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/storages"
-	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
-	_ "github.com/a1ta1r/Credit-Portfolio/internal/specification/responses"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
 )
 
-type AdvertisementsController struct {
-	advertiserStorage    storages.AdvertiserStorage
+type AdvertisementController struct {
 	advertisementStorage storages.AdvertisementStorage
-	bannerStorage        storages.BannerStorage
-	bannerPlaceStorage   storages.BannerPlaceStorage
 }
 
-func NewAdvertisementController(
-	advertiserStorage storages.AdvertiserStorage,
-	advertisementStorage storages.AdvertisementStorage,
-	bannerStorage storages.BannerStorage,
-	bannerPlaceStorage storages.BannerPlaceStorage,
-) AdvertisementsController {
-	return AdvertisementsController{
-		advertiserStorage:    advertiserStorage,
-		advertisementStorage: advertisementStorage,
-		bannerStorage:        bannerStorage,
-		bannerPlaceStorage:   bannerPlaceStorage,
-	}
+func NewAdvertisementController(storage storages.AdvertisementStorage) AdvertisementController {
+	return AdvertisementController{advertisementStorage: storage}
 }
 
-// @Summary Получить список всех рекламодателей
-// @Description Метод возвращает список всех имеющихся в системе рекламодателей
-// @Produce  json
-// @Success 200 {object} responses.AllAdvertisers
-// @Router /advertisers [get]
-func (ac AdvertisementsController) GetAdvertisers(c *gin.Context) {
-	var advertisers []entities.Advertiser
-	advertisers, _ = ac.advertiserStorage.GetAdvertisers()
-	for i := 0; i < len(advertisers); i++ {
-		advertisers[i].Password = ""
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"status":      "OK",
-		"count":       len(advertisers),
-		"advertisers": advertisers,
-	})
-}
-
-// @Summary Получить рекламодателя по ID
-// @Description Метод возвращает рекламодателя по его ID
+// @Tags Advertisements
+// @Summary Получить рекламные объявления рекламодателя
+// @Description Метод возвращает данные о рекламных объявлениях рекламодателя с заданным ID
 // @Produce  json
 // @Param id path int true "ID рекламодателя"
-// @Success 200 {object} entities.Advertiser "{"advertiser": entities.Advertiser}"
-// @Failure 404 "{"message": "resource not found"}"
-// @Router /advertisers/{id} [get]
-func (ac AdvertisementsController) GetAdvertiser(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
-		return
-	}
-	advertiser, err := ac.advertiserStorage.GetAdvertiser(uint(id))
-	if advertiser.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
-		return
-	}
-	advertiser.Password = ""
-	c.JSON(http.StatusOK, gin.H{"advertiser": advertiser})
-}
-
-// @Summary Добавить нового рекламодателя
-// @Description Метод добавляет в систему нового рекламодателя с заданными параметрами
-// @Accept json
-// @Produce  json
-// @Param advertiser body entities.Advertiser true "Данные о рекламодателе"
-// @Success 200 {object} entities.Advertiser "{"advertiser": entities.Advertiser}"
-// @Router /advertisers [post]
-func (ac AdvertisementsController) AddAdvertiser(c *gin.Context) {
-	var advertiser entities.Advertiser
-	c.BindJSON(&advertiser)
-	advertiser.Role = roles.Ads
-	advertiser.Password = advertiser.GetHashedPassword()
-	err := ac.advertiserStorage.CreateAdvertiser(&advertiser)
-	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": codes.ResourceExists})
-		return
-	}
-	c.JSON(http.StatusCreated, gin.H{"advertiser": advertiser})
-}
-
-func (ac AdvertisementsController) DeleteAdvertiser(c *gin.Context) {
-	var advertiser entities.Advertiser
-	c.BindJSON(&advertiser)
-	ac.advertiserStorage.DeleteAdvertiser(advertiser)
-	c.JSON(http.StatusOK, gin.H{"message": codes.ResDeleted})
-}
-
-func (ac AdvertisementsController) UpdateAdvertiser(c *gin.Context) {
-	var advertiser entities.Advertiser
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
-		return
-	}
-	advertiser, _ = ac.advertiserStorage.GetAdvertiser(uint(id))
-	if advertiser.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
-		return
-	}
-
-	c.ShouldBindWith(&advertiser, binding.JSON)
-	_ = ac.advertiserStorage.UpdateAdvertiser(advertiser)
-	c.JSON(http.StatusOK, gin.H{
-		"status":     "OK",
-		"advertiser": advertiser,
-	})
-}
-
-func (ac AdvertisementsController) GetAdvertisementsByAdvertiser(c *gin.Context) {
+// @Success 200 {object} responses.AllAdvertisements
+// @Failure 422
+// @Router /advertiser/{id}/ads [get]
+func (ac AdvertisementController) GetAdvertisementsByAdvertiser(c *gin.Context) {
 	var advertisements []entities.Advertisement
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -136,81 +41,114 @@ func (ac AdvertisementsController) GetAdvertisementsByAdvertiser(c *gin.Context)
 	})
 }
 
-func (ac AdvertisementsController) GetAdvertisements(c *gin.Context) {
-	var advertisement []entities.Advertisement
-	advertisement, _ = ac.advertisementStorage.GetAdvertisements()
+// @Tags Advertisements
+// @Summary Получить вообще все рекламные объявления
+// @Description Метод возвращает данные о всех рекламных объявлениях
+// @Produce  json
+// @Success 200 {object} responses.AllAdvertisements
+// @Failure 422
+// @Router /ads [get]
+func (ac AdvertisementController) GetAdvertisements(c *gin.Context) {
+	var advertisements []entities.Advertisement
+	advertisements, _ = ac.advertisementStorage.GetAdvertisements()
 	c.JSON(http.StatusOK, gin.H{
 		"status":      "OK",
-		"count":       len(advertisement),
-		"advertisers": advertisement,
+		"count":       len(advertisements),
+		"advertisements": advertisements,
 	})
 }
 
-func (ac AdvertisementsController) GetAdvertisement(c *gin.Context) {
-	var advertisement entities.Advertiser
+// @Tags Advertisements
+// @Summary Получить рекламное объявление по ID
+// @Description Метод возвращает данные рекламном объявлении с данным ID
+// @Produce  json
+// @Param id path int true "ID рекламного объявления"
+// @Success 200 {object} responses.OneAdvertisement
+// @Failure 404
+// @Failure 422
+// @Router /ads/{id} [get]
+func (ac AdvertisementController) GetAdvertisement(c *gin.Context) {
+	var advertisement entities.Advertisement
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	advertisement, _ = ac.advertiserStorage.GetAdvertiser(uint(id))
+	advertisement, _ = ac.advertisementStorage.GetAdvertisement(uint(id))
 	if advertisement.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"advertiser": advertisement})
+	c.JSON(http.StatusOK, gin.H{"advertisement": advertisement})
 }
 
-func (ac AdvertisementsController) AddAdvertisement(c *gin.Context) {
-	var advertiser entities.Advertiser
-	c.BindJSON(&advertiser)
-	err := ac.advertiserStorage.CreateAdvertiser(&advertiser)
+// @Tags Advertisements
+// @Summary Добавить рекламное объявление
+// @Description Метод добавляет новое рекламне объявление с заданными параметрами
+// @Accept json
+// @Produce  json
+// @Param advertisement body entities.Advertisement true "Данные о рекламном объявлении"
+// @Success 201 {object} responses.OneAdvertisement
+// @Failure 422
+// @Router /ads [post]
+func (ac AdvertisementController) AddAdvertisement(c *gin.Context) {
+	var advertisement entities.Advertisement
+	c.BindJSON(&advertisement)
+	err := ac.advertisementStorage.CreateAdvertisement(advertisement)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": codes.InternalError})
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": codes.ResourceExists})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"advertiser": advertiser})
+	c.JSON(http.StatusCreated, gin.H{"advertisement": advertisement})
 }
 
-func (ac AdvertisementsController) DeleteAdvertisement(c *gin.Context) {
-	var advertiser entities.Advertiser
-	c.BindJSON(&advertiser)
-	ac.advertiserStorage.DeleteAdvertiser(advertiser)
-	c.JSON(http.StatusOK, gin.H{"message": codes.ResDeleted})
-}
-
-func (ac AdvertisementsController) UpdateAdvertisement(c *gin.Context) {
-	var advertiser entities.Advertiser
+// @Tags Advertisements
+// @Summary Удалить рекламное объявление
+// @Description Метод удаляет рекламне объявление с заданным ID
+// @Produce  json
+// @Param id path int true "ID рекламного объявления"
+// @Success 200
+// @Failure 422
+// @Router /ads/{id} [delete]
+func (ac AdvertisementController) DeleteAdvertisement(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	advertiser, _ = ac.advertiserStorage.GetAdvertiser(uint(id))
-	if advertiser.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
-		return
-	}
-
-	c.ShouldBindWith(&advertiser, binding.JSON)
-	_ = ac.advertiserStorage.UpdateAdvertiser(advertiser)
-	c.JSON(http.StatusOK, gin.H{
-		"status":     "OK",
-		"advertiser": advertiser,
-	})
+	advertisement := entities.Advertisement{ID: uint(id)}
+	ac.advertisementStorage.DeleteAdvertisement(advertisement)
+	c.JSON(http.StatusOK, gin.H{"message": codes.ResDeleted})
 }
 
-func (ac AdvertisementsController) GetBannersByAdvertisement(c *gin.Context) {
-	var banners []entities.Banner
-	id, err := strconv.ParseUint(c.Param("adsid"), 10, 32)
+// @Tags Advertisements
+// @Summary Обновить рекламное объявление
+// @Description Метод обновляет рекламне объявление с заданным ID
+// @Accept json
+// @Produce  json
+// @Param id path int true "ID рекламного объявления"
+// @Param advertisement body entities.Advertisement true "Новые данные о рекламном объявлении"
+// @Success 200 {object} responses.OneAdvertisement
+// @Failure 404
+// @Failure 422
+// @Router /ads/{id} [put]
+func (ac AdvertisementController) UpdateAdvertisement(c *gin.Context) {
+	var advertisement entities.Advertisement
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	banners, _ = ac.bannerStorage.GetBannersByAdvertisement(uint(id))
+	advertisement, _ = ac.advertisementStorage.GetAdvertisement(uint(id))
+	if advertisement.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+
+	c.ShouldBindWith(&advertisement, binding.JSON)
+	_ = ac.advertisementStorage.UpdateAdvertisement(advertisement)
 	c.JSON(http.StatusOK, gin.H{
-		"status":  "OK",
-		"count":   len(banners),
-		"banners": banners,
+		"status":     "OK",
+		"advertisement": advertisement,
 	})
 }

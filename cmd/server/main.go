@@ -53,11 +53,11 @@ func main() {
 	expenseController := loanControllers.NewExpenseController(&db)
 	agendaController := loanControllers.NewAgendaController(agendaService)
 	calculationController := loanControllers.NewCalculatorController(&db)
-	advertisementController := adsControllers.NewAdvertisementController(
+	advertiserController := adsControllers.NewAdvertiserController(
 		storageContainer.AdvertiserStorage,
-		storageContainer.AdvertisementStorage,
 		storageContainer.BannerStorage,
 		storageContainer.BannerPlaceStorage)
+	advertisementController := adsControllers.NewAdvertisementController(storageContainer.AdvertisementStorage)
 
 	router := gin.New()
 
@@ -118,18 +118,22 @@ func main() {
 	//TODO убрать рекламщиков в вип доступ для админа
 	advertisers := router.Group("/advertisers")
 	{
-		advertisers.GET("/:id", advertisementController.GetAdvertiser)
-		advertisers.GET("", advertisementController.GetAdvertisers)
-		advertisers.POST("", advertisementController.AddAdvertiser)
-		advertisers.PUT("/:id", advertisementController.UpdateAdvertiser)
-		advertisers.DELETE("/:id", advertisementController.DeleteAdvertiser)
-		advertisements := advertisers.Group("/:id/ads")
-		{
-			advertisements.GET("", advertisementController.GetAdvertisementsByAdvertiser)
-			advertisements.POST("", advertisementController.AddAdvertisement)
-			advertisements.GET("/:adsid/banners", advertisementController.GetBannersByAdvertisement)
-		}
+		advertisers.GET("/:id", advertiserController.GetAdvertiser)
+		advertisers.GET("", advertiserController.GetAdvertisers)
+		advertisers.POST("", advertiserController.AddAdvertiser)
+		advertisers.PUT("/:id", advertiserController.UpdateAdvertiser)
+		advertisers.DELETE("/:id", advertiserController.DeleteAdvertiser)
+		advertisers.GET("/:id/ads", advertisementController.GetAdvertisementsByAdvertiser)
 
+	}
+
+	advertisements := router.Group("/ads")
+	{
+		advertisements.GET("/:id", advertisementController.GetAdvertisement)
+		advertisements.GET("", advertisementController.GetAdvertisements)
+		advertisements.DELETE("/:id", advertisementController.DeleteAdvertisement)
+		advertisements.PUT("/:id", advertisementController.UpdateAdvertisement)
+		advertisements.POST("", advertisementController.AddAdvertisement)
 	}
 
 	private := func(c *gin.Context) {
