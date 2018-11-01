@@ -1,11 +1,11 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "{{.Description}}",
-        "title": "{{.Title}}",
+        "description": "Документация по методам API приложения \"Кредитный портфель\"",
+        "title": "Loan Portfolio API doc",
         "contact": {},
         "license": {},
-        "version": "{{.Version}}"
+        "version": "0.5"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
@@ -242,10 +242,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{\"advertiser\": entities.Advertiser}",
+                        "description": "Created",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/entities.Advertiser"
+                            "$ref": "#/definitions/responses.OneAdvertiser"
                         }
                     },
                     "422": {}
@@ -273,10 +273,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"advertiser\": entities.Advertiser}",
+                        "description": "OK",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/entities.Advertiser"
+                            "$ref": "#/definitions/responses.OneAdvertiser"
                         }
                     },
                     "404": {
@@ -318,10 +318,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"advertiser\": entities.Advertiser}",
+                        "description": "OK",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/entities.Advertiser"
+                            "$ref": "#/definitions/responses.OneAdvertiser"
                         }
                     },
                     "404": {},
@@ -499,6 +499,15 @@
                 "advertisement": {
                     "type": "object",
                     "$ref": "#/definitions/entities.Advertisement"
+                }
+            }
+        },
+        "responses.OneAdvertiser": {
+            "type": "object",
+            "properties": {
+                "advertiser": {
+                    "type": "object",
+                    "$ref": "#/definitions/entities.Advertiser"
                 }
             }
         }

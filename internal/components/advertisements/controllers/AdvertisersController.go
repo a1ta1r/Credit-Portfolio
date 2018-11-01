@@ -54,7 +54,7 @@ func (ac AdvertiserController) GetAdvertisers(c *gin.Context) {
 // @Description Метод возвращает рекламодателя по его ID
 // @Produce  json
 // @Param id path int true "ID рекламодателя"
-// @Success 200 {object} entities.Advertiser "{"advertiser": entities.Advertiser}"
+// @Success 200 {object} responses.OneAdvertiser
 // @Failure 404 "{"message": "resource not found"}"
 // @Failure 422
 // @Router /advertisers/{id} [get]
@@ -79,7 +79,7 @@ func (ac AdvertiserController) GetAdvertiser(c *gin.Context) {
 // @Accept json
 // @Produce  json
 // @Param advertiser body entities.Advertiser true "Данные о рекламодателе"
-// @Success 201 {object} entities.Advertiser "{"advertiser": entities.Advertiser}"
+// @Success 201 {object} responses.OneAdvertiser
 // @Failure 422
 // @Router /advertisers [post]
 func (ac AdvertiserController) AddAdvertiser(c *gin.Context) {
@@ -121,7 +121,7 @@ func (ac AdvertiserController) DeleteAdvertiser(c *gin.Context) {
 // @Produce  json
 // @Param id path int true "ID рекламодателя"
 // @Param advertiser body entities.Advertiser true "Новые данные о рекламодателе"
-// @Success 200 {object} entities.Advertiser "{"advertiser": entities.Advertiser}"
+// @Success 200 {object} responses.OneAdvertiser
 // @Failure 404
 // @Failure 422
 // @Router /advertisers/{id} [put]

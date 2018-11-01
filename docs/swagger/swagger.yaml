@@ -1,4 +1,3 @@
-basePath: '{{.BasePath}}'
 definitions:
   entities.Advertisement:
     properties:
@@ -105,13 +104,9 @@ definitions:
         $ref: '#/definitions/entities.Advertiser'
         type: object
     type: object
-host: '{{.Host}}'
 info:
   contact: {}
-  description: Документация по методам API приложения "Кредитный портфель"
   license: {}
-  title: Loan Portfolio API doc
-  version: "0.5"
 paths:
   /ads:
     get:
@@ -349,4 +344,3 @@ paths:
       summary: Обновить рекламодателя
       tags:
       - Advertisers
-swagger: "2.0"

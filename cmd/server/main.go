@@ -21,6 +21,10 @@ import (
 	_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
 )
 
+
+// @title Loan Portfolio API doc
+// @version 0.5
+// @description Документация по методам API приложения "Кредитный портфель"
 func main() {
 	godotenv.Load()
 
