@@ -1,14 +1,8 @@
 {
-    "swagger": "2.0",
     "info": {
-        "description": "Документация по методам API приложения \"Кредитный портфель\"",
-        "title": "Loan Portfolio API doc",
         "contact": {},
-        "license": {},
-        "version": "0.5"
+        "license": {}
     },
-    "host": "{{.Host}}",
-    "basePath": "{{.BasePath}}",
     "paths": {
         "/partners": {
             "get": {
@@ -50,7 +44,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/entities.Advertiser"
+                            "$ref": "#/definitions/requests.NewAdvertiser"
                         }
                     }
                 ],
@@ -126,7 +120,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/entities.Advertiser"
+                            "$ref": "#/definitions/requests.UpdateAdvertiser"
                         }
                     }
                 ],
@@ -455,6 +449,55 @@
                 }
             }
         },
+        "requests.NewAdvertiser": {
+            "type": "object",
+            "required": [
+                "email",
+                "isActive",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "contactInfo": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.UpdateAdvertiser": {
+            "type": "object",
+            "properties": {
+                "contactInfo": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "responses.AllAdvertisements": {
             "type": "object",
             "properties": {
@@ -496,7 +539,7 @@
         "responses.OneAdvertisement": {
             "type": "object",
             "properties": {
-                "advertisement": {
+                "Advertisement": {
                     "type": "object",
                     "$ref": "#/definitions/entities.Advertisement"
                 }

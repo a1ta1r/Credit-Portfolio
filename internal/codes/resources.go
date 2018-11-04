@@ -11,4 +11,9 @@ const Forbidden = "request forbidden"
 const ResourceExists = "unique constraint does not allow to create resource"
 const BadTimeFormat = "Could not recognize given time format, please use RFC3339 2006-01-02T15:04:05Z07:00"
 
+const EmailRequired = "email is required"
+const EmailInvalid = "email must be valid"
+const InvalidJSON = "request body must be valid JSON"
+const PasswordRequired = "password is required"
+
 const ConnectionError = "could not connect to database"

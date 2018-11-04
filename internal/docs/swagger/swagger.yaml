@@ -1,4 +1,3 @@
-basePath: '{{.BasePath}}'
 definitions:
   entities.Advertisement:
     properties:
@@ -67,6 +66,39 @@ definitions:
       views:
         type: integer
     type: object
+  requests.NewAdvertiser:
+    properties:
+      contactInfo:
+        type: string
+      email:
+        type: string
+      isActive:
+        type: boolean
+      notes:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - isActive
+    - password
+    - username
+    type: object
+  requests.UpdateAdvertiser:
+    properties:
+      contactInfo:
+        type: string
+      email:
+        type: string
+      isActive:
+        type: boolean
+      notes:
+        type: string
+      username:
+        type: string
+    type: object
   responses.AllAdvertisements:
     properties:
       advertisements:
@@ -95,7 +127,7 @@ definitions:
     type: object
   responses.OneAdvertisement:
     properties:
-      advertisement:
+      Advertisement:
         $ref: '#/definitions/entities.Advertisement'
         type: object
     type: object
@@ -105,13 +137,9 @@ definitions:
         $ref: '#/definitions/entities.Advertiser'
         type: object
     type: object
-host: '{{.Host}}'
 info:
   contact: {}
-  description: Документация по методам API приложения "Кредитный портфель"
   license: {}
-  title: Loan Portfolio API doc
-  version: "0.5"
 paths:
   /partners:
     get:
@@ -137,7 +165,7 @@ paths:
         name: advertiser
         required: true
         schema:
-          $ref: '#/definitions/entities.Advertiser'
+          $ref: '#/definitions/requests.NewAdvertiser'
           type: object
       produces:
       - application/json
@@ -205,7 +233,7 @@ paths:
         name: advertiser
         required: true
         schema:
-          $ref: '#/definitions/entities.Advertiser'
+          $ref: '#/definitions/requests.UpdateAdvertiser'
           type: object
       produces:
       - application/json
@@ -349,4 +377,3 @@ paths:
       summary: Обновить рекламное объявление
       tags:
       - Advertisements
-swagger: "2.0"
