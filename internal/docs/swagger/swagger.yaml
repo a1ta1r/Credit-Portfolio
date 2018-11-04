@@ -1,8 +1,6 @@
 definitions:
   entities.Advertisement:
     properties:
-      IsActive:
-        type: boolean
       advertiserId:
         type: integer
       banners:
@@ -13,6 +11,10 @@ definitions:
         type: string
       id:
         type: integer
+      isActive:
+        type: boolean
+      title:
+        type: string
       updatedAt:
         type: string
     type: object
@@ -66,6 +68,19 @@ definitions:
       views:
         type: integer
     type: object
+  requests.NewAdvertisement:
+    properties:
+      advertiserId:
+        type: integer
+      isActive:
+        type: boolean
+      title:
+        type: string
+    required:
+    - advertiserId
+    - isActive
+    - title
+    type: object
   requests.NewAdvertiser:
     properties:
       contactInfo:
@@ -85,6 +100,13 @@ definitions:
     - isActive
     - password
     - username
+    type: object
+  requests.UpdateAdvertisement:
+    properties:
+      isActive:
+        type: boolean
+      title:
+        type: string
     type: object
   requests.UpdateAdvertiser:
     properties:
@@ -175,7 +197,6 @@ paths:
           schema:
             $ref: '#/definitions/responses.OneAdvertiser'
             type: object
-        "422": {}
       summary: Добавить нового рекламодателя
       tags:
       - Advertisers
@@ -295,7 +316,7 @@ paths:
         name: advertisement
         required: true
         schema:
-          $ref: '#/definitions/entities.Advertisement'
+          $ref: '#/definitions/requests.NewAdvertisement'
           type: object
       produces:
       - application/json
@@ -305,7 +326,6 @@ paths:
           schema:
             $ref: '#/definitions/responses.OneAdvertisement'
             type: object
-        "422": {}
       summary: Добавить рекламное объявление
       tags:
       - Advertisements
@@ -362,7 +382,7 @@ paths:
         name: advertisement
         required: true
         schema:
-          $ref: '#/definitions/entities.Advertisement'
+          $ref: '#/definitions/requests.UpdateAdvertisement'
           type: object
       produces:
       - application/json

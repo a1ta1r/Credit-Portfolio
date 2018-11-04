@@ -55,8 +55,7 @@
                             "type": "object",
                             "$ref": "#/definitions/responses.OneAdvertiser"
                         }
-                    },
-                    "422": {}
+                    }
                 }
             }
         },
@@ -232,7 +231,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/entities.Advertisement"
+                            "$ref": "#/definitions/requests.NewAdvertisement"
                         }
                     }
                 ],
@@ -243,8 +242,7 @@
                             "type": "object",
                             "$ref": "#/definitions/responses.OneAdvertisement"
                         }
-                    },
-                    "422": {}
+                    }
                 }
             }
         },
@@ -306,7 +304,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/entities.Advertisement"
+                            "$ref": "#/definitions/requests.UpdateAdvertisement"
                         }
                     }
                 ],
@@ -351,9 +349,6 @@
         "entities.Advertisement": {
             "type": "object",
             "properties": {
-                "IsActive": {
-                    "type": "boolean"
-                },
                 "advertiserId": {
                     "type": "integer"
                 },
@@ -368,6 +363,12 @@
                 },
                 "id": {
                     "type": "integer"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -449,6 +450,25 @@
                 }
             }
         },
+        "requests.NewAdvertisement": {
+            "type": "object",
+            "required": [
+                "advertiserId",
+                "isActive",
+                "title"
+            ],
+            "properties": {
+                "advertiserId": {
+                    "type": "integer"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "requests.NewAdvertiser": {
             "type": "object",
             "required": [
@@ -474,6 +494,17 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.UpdateAdvertisement": {
+            "type": "object",
+            "properties": {
+                "isActive": {
+                    "type": "boolean"
+                },
+                "title": {
                     "type": "string"
                 }
             }

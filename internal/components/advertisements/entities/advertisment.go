@@ -8,6 +8,7 @@ type Advertisement struct {
 	UpdatedAt    time.Time  `json:"updatedAt"`
 	Advertiser   Advertiser `json:"-"`
 	AdvertiserID uint       `json:"advertiserId"`
-	IsActive     bool       `json:"IsActive"`
+	IsActive     bool       `json:"isActive"`
 	Banners      []Banner   `json:"banners"`
+	Title        string     `json:"title"`
 }

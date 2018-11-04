@@ -3,7 +3,7 @@ package controllers
 import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
-	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/errors"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/errors"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/storages"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
 	"github.com/a1ta1r/Credit-Portfolio/internal/specification/requests"
@@ -82,7 +82,6 @@ func (ac AdvertiserController) GetAdvertiser(c *gin.Context) {
 // @Produce  json
 // @Param advertiser body requests.NewAdvertiser true "Данные о рекламодателе"
 // @Success 201 {object} responses.OneAdvertiser
-// @Failure 422
 // @Router /partners [post]
 func (ac AdvertiserController) AddAdvertiser(c *gin.Context) {
 	var request requests.NewAdvertiser
@@ -102,7 +101,7 @@ func (ac AdvertiserController) AddAdvertiser(c *gin.Context) {
 	advertiser.Password = advertiser.GetHashedPassword()
 	err := ac.advertiserStorage.CreateAdvertiser(&advertiser)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": codes.Unhealthy})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": codes.Unhealthy})
 		return
 	}
 	advertiser.Password = ""
