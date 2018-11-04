@@ -21,7 +21,6 @@ import (
 	_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
 )
 
-
 // @title Loan Portfolio API doc
 // @version 0.5
 // @description Документация по методам API приложения "Кредитный портфель"
@@ -37,7 +36,7 @@ func main() {
 	//println("Dropping all tables")
 	//app.DropAllTables()
 	//println("Done. Tables dropped.")
-	//
+
 	//println("Synchronizing entities with DB")
 	//app.SyncModelsWithSchema()
 	//println("Done. DB Modified.")
@@ -61,7 +60,8 @@ func main() {
 		storageContainer.AdvertiserStorage,
 		storageContainer.BannerStorage,
 		storageContainer.BannerPlaceStorage)
-	advertisementController := adsControllers.NewAdvertisementController(storageContainer.AdvertisementStorage)
+	advertisementController := adsControllers.NewAdvertisementController(
+		storageContainer.AdvertisementStorage, storageContainer.AdvertiserStorage)
 
 	router := gin.New()
 

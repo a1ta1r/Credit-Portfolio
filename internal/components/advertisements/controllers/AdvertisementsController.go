@@ -7,6 +7,7 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/errors"
 	"github.com/a1ta1r/Credit-Portfolio/internal/specification/requests"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/go-playground/validator.v8"
 	"net/http"
 	"strconv"
@@ -14,10 +15,12 @@ import (
 
 type AdvertisementController struct {
 	advertisementStorage storages.AdvertisementStorage
+	advertiserStorage    storages.AdvertiserStorage
 }
 
-func NewAdvertisementController(storage storages.AdvertisementStorage) AdvertisementController {
-	return AdvertisementController{advertisementStorage: storage}
+func NewAdvertisementController(storage storages.AdvertisementStorage,
+	advStorage storages.AdvertiserStorage) AdvertisementController {
+	return AdvertisementController{advertisementStorage: storage, advertiserStorage: advStorage}
 }
 
 // @Tags Advertisements
@@ -103,6 +106,10 @@ func (ac AdvertisementController) AddAdvertisement(c *gin.Context) {
 		}
 		errorMsg := errors.GetErrorMessages(validationErrors)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"errors": errorMsg})
+		return
+	}
+	if _, err := ac.advertiserStorage.GetAdvertiser(uint(request.AdvertiserID)); err == gorm.ErrRecordNotFound {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": codes.AdvertiserNotExists})
 		return
 	}
 	advertisement = request.ToAdvertisement()
