@@ -1,8 +1,14 @@
 {
+  "swagger": "2.0",
     "info": {
+      "description": "Документация по методам API приложения \"Кредитный портфель\"",
+      "title": "Loan Portfolio API doc",
         "contact": {},
-        "license": {}
+      "license": {},
+      "version": "0.5"
     },
+  "host": "{{.Host}}",
+  "basePath": "{{.BasePath}}",
     "paths": {
         "/partners": {
             "get": {
@@ -343,6 +349,42 @@
                     "422": {}
                 }
             }
+        },
+      "/stats/users/registered": {
+        "get": {
+          "description": "Метод возвращает число новых пользователей за данный период",
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Statistics"
+          ],
+          "summary": "Получить количество зарегистрированных за данный период пользователей",
+          "parameters": [
+            {
+              "type": "string",
+              "description": "Начало периода",
+              "name": "from",
+              "in": "query"
+            },
+            {
+              "type": "string",
+              "description": "Конец периода",
+              "name": "to",
+              "in": "query"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "type": "object",
+                "$ref": "#/definitions/responses.UserStat"
+              }
+            },
+            "422": {}
+          }
+        }
         }
     },
     "definitions": {
@@ -584,6 +626,17 @@
                     "$ref": "#/definitions/entities.Advertiser"
                 }
             }
+        },
+      "responses.UserStat": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
         }
     }
 }

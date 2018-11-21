@@ -11,10 +11,10 @@ type Banner struct {
 	UniqueViewsRequired uint        `json:"uniqueViewsRequired"`
 	Views               uint        `json:"views"`
 	UniqueViews         uint        `json:"uniqueViews"`
-	BannerPlace         BannerPlace `json:"-"`
+	BannerPlace         BannerPlace `json:"-" gorm:"foreignkey:BannerPlaceID"`
 	BannerPlaceID       uint        `json:"bannerPlaceId"`
 	IsVisible           bool        `json:"isVisible"`
-	Advertisement       Advertiser  `json:"-"`
+	Advertisement       Advertiser  `json:"-" gorm:"foreignkey:AdvertisementID"`
 	AdvertisementID     uint        `json:"advertisementId"`
 }
 

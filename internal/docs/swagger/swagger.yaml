@@ -1,3 +1,4 @@
+basePath: '{{.BasePath}}'
 definitions:
   entities.Advertisement:
     properties:
@@ -77,9 +78,9 @@ definitions:
       title:
         type: string
     required:
-    - advertiserId
-    - isActive
-    - title
+      - advertiserId
+      - isActive
+      - title
     type: object
   requests.NewAdvertiser:
     properties:
@@ -96,10 +97,10 @@ definitions:
       username:
         type: string
     required:
-    - email
-    - isActive
-    - password
-    - username
+      - email
+      - isActive
+      - password
+      - username
     type: object
   requests.UpdateAdvertisement:
     properties:
@@ -159,15 +160,26 @@ definitions:
         $ref: '#/definitions/entities.Advertiser'
         type: object
     type: object
+  responses.UserStat:
+    properties:
+      count:
+        type: integer
+      status:
+        type: string
+    type: object
+host: '{{.Host}}'
 info:
   contact: {}
+  description: Документация по методам API приложения "Кредитный портфель"
   license: {}
+  title: Loan Portfolio API doc
+  version: "0.5"
 paths:
   /partners:
     get:
       description: Метод возвращает список всех имеющихся в системе рекламодателей
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -176,21 +188,21 @@ paths:
             type: object
       summary: Получить список всех рекламодателей
       tags:
-      - Advertisers
+        - Advertisers
     post:
       consumes:
-      - application/json
+        - application/json
       description: Метод добавляет в систему нового рекламодателя с заданными параметрами
       parameters:
-      - description: Данные о рекламодателе
-        in: body
-        name: advertiser
-        required: true
-        schema:
-          $ref: '#/definitions/requests.NewAdvertiser'
-          type: object
+        - description: Данные о рекламодателе
+          in: body
+          name: advertiser
+          required: true
+          schema:
+            $ref: '#/definitions/requests.NewAdvertiser'
+            type: object
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
@@ -199,34 +211,34 @@ paths:
             type: object
       summary: Добавить нового рекламодателя
       tags:
-      - Advertisers
+        - Advertisers
   /partners/{id}:
     delete:
       description: Метод удаляет из системы рекламодателя с заданным ID
       parameters:
-      - description: ID рекламодателя
-        in: path
-        name: id
-        required: true
-        type: integer
+        - description: ID рекламодателя
+          in: path
+          name: id
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200": {}
         "422": {}
       summary: Удалить рекламодателя
       tags:
-      - Advertisers
+        - Advertisers
     get:
       description: Метод возвращает рекламодателя по его ID
       parameters:
-      - description: ID рекламодателя
-        in: path
-        name: id
-        required: true
-        type: integer
+        - description: ID рекламодателя
+          in: path
+          name: id
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -238,26 +250,26 @@ paths:
         "422": {}
       summary: Получить рекламодателя по ID
       tags:
-      - Advertisers
+        - Advertisers
     put:
       consumes:
-      - application/json
+        - application/json
       description: Метод обновляет рекламодателя заданными параметрами по ID
       parameters:
-      - description: ID рекламодателя
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Новые данные о рекламодателе
-        in: body
-        name: advertiser
-        required: true
-        schema:
-          $ref: '#/definitions/requests.UpdateAdvertiser'
-          type: object
+        - description: ID рекламодателя
+          in: path
+          name: id
+          required: true
+          type: integer
+        - description: Новые данные о рекламодателе
+          in: body
+          name: advertiser
+          required: true
+          schema:
+            $ref: '#/definitions/requests.UpdateAdvertiser'
+            type: object
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -268,19 +280,19 @@ paths:
         "422": {}
       summary: Обновить рекламодателя
       tags:
-      - Advertisers
+        - Advertisers
   /partners/{id}/promotions:
     get:
       description: Метод возвращает данные о рекламных объявлениях рекламодателя с
         заданным ID
       parameters:
-      - description: ID рекламодателя
-        in: path
-        name: id
-        required: true
-        type: integer
+        - description: ID рекламодателя
+          in: path
+          name: id
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -290,12 +302,12 @@ paths:
         "422": {}
       summary: Получить рекламные объявления рекламодателя
       tags:
-      - Advertisements
+        - Advertisements
   /promotions:
     get:
       description: Метод возвращает данные о всех рекламных объявлениях
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -305,21 +317,21 @@ paths:
         "422": {}
       summary: Получить вообще все рекламные объявления
       tags:
-      - Advertisements
+        - Advertisements
     post:
       consumes:
-      - application/json
+        - application/json
       description: Метод добавляет новое рекламне объявление с заданными параметрами
       parameters:
-      - description: Данные о рекламном объявлении
-        in: body
-        name: advertisement
-        required: true
-        schema:
-          $ref: '#/definitions/requests.NewAdvertisement'
-          type: object
+        - description: Данные о рекламном объявлении
+          in: body
+          name: advertisement
+          required: true
+          schema:
+            $ref: '#/definitions/requests.NewAdvertisement'
+            type: object
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
@@ -328,34 +340,34 @@ paths:
             type: object
       summary: Добавить рекламное объявление
       tags:
-      - Advertisements
+        - Advertisements
   /promotions/{id}:
     delete:
       description: Метод удаляет рекламне объявление с заданным ID
       parameters:
-      - description: ID рекламного объявления
-        in: path
-        name: id
-        required: true
-        type: integer
+        - description: ID рекламного объявления
+          in: path
+          name: id
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200": {}
         "422": {}
       summary: Удалить рекламное объявление
       tags:
-      - Advertisements
+        - Advertisements
     get:
       description: Метод возвращает данные рекламном объявлении с данным ID
       parameters:
-      - description: ID рекламного объявления
-        in: path
-        name: id
-        required: true
-        type: integer
+        - description: ID рекламного объявления
+          in: path
+          name: id
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -366,26 +378,26 @@ paths:
         "422": {}
       summary: Получить рекламное объявление по ID
       tags:
-      - Advertisements
+        - Advertisements
     put:
       consumes:
-      - application/json
+        - application/json
       description: Метод обновляет рекламне объявление с заданным ID
       parameters:
-      - description: ID рекламного объявления
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Новые данные о рекламном объявлении
-        in: body
-        name: advertisement
-        required: true
-        schema:
-          $ref: '#/definitions/requests.UpdateAdvertisement'
-          type: object
+        - description: ID рекламного объявления
+          in: path
+          name: id
+          required: true
+          type: integer
+        - description: Новые данные о рекламном объявлении
+          in: body
+          name: advertisement
+          required: true
+          schema:
+            $ref: '#/definitions/requests.UpdateAdvertisement'
+            type: object
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -396,4 +408,29 @@ paths:
         "422": {}
       summary: Обновить рекламное объявление
       tags:
-      - Advertisements
+        - Advertisements
+  /stats/users/registered:
+    get:
+      description: Метод возвращает число новых пользователей за данный период
+      parameters:
+        - description: Начало периода
+          in: query
+          name: from
+          type: string
+        - description: Конец периода
+          in: query
+          name: to
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserStat'
+            type: object
+        "422": {}
+      summary: Получить количество зарегистрированных за данный период пользователей
+      tags:
+        - Statistics
+swagger: "2.0"

@@ -6,7 +6,7 @@ type Advertisement struct {
 	ID           uint       `gorm:"primary_key" json:"id"`
 	CreatedAt    time.Time  `json:"createdAt"`
 	UpdatedAt    time.Time  `json:"updatedAt"`
-	Advertiser   Advertiser `json:"-"`
+	Advertiser   Advertiser `json:"-" gorm:"foreignkey:AdvertiserID"`
 	AdvertiserID uint       `json:"advertiserId"`
 	IsActive     bool       `json:"isActive"`
 	Banners      []Banner   `json:"banners"`

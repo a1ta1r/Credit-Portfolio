@@ -11,6 +11,8 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/system"
+	statControllers "github.com/a1ta1r/Credit-Portfolio/internal/components/user/controllers"
+	statServices "github.com/a1ta1r/Credit-Portfolio/internal/components/user/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -36,7 +38,7 @@ func main() {
 	//println("Dropping all tables")
 	//app.DropAllTables()
 	//println("Done. Tables dropped.")
-
+	//
 	//println("Synchronizing entities with DB")
 	//app.SyncModelsWithSchema()
 	//println("Done. DB Modified.")
@@ -46,6 +48,7 @@ func main() {
 	//Add services to DI
 	userService := services.NewUserService(storageContainer)
 	agendaService := services.NewAgendaService(db)
+	userStatService := statServices.UserStatisticsService{storageContainer.UserStorage}
 
 	healthController := system.NewHealthController(&db)
 	userController := loanControllers.NewUserController(userService)
@@ -62,6 +65,7 @@ func main() {
 		storageContainer.BannerPlaceStorage)
 	advertisementController := adsControllers.NewAdvertisementController(
 		storageContainer.AdvertisementStorage, storageContainer.AdvertiserStorage)
+	userStatController := statControllers.NewUserStatisticsController(userStatService)
 
 	router := gin.New()
 
@@ -138,6 +142,11 @@ func main() {
 		advertisements.DELETE("/:id", advertisementController.DeleteAdvertisement)
 		advertisements.PUT("/:id", advertisementController.UpdateAdvertisement)
 		advertisements.POST("", advertisementController.AddAdvertisement)
+	}
+
+	systemStat := router.Group("/stats")
+	{
+		systemStat.GET("/users/registered", userStatController.GetRegisteredUsersCount)
 	}
 
 	private := func(c *gin.Context) {

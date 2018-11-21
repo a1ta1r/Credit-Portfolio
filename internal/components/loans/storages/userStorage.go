@@ -3,6 +3,7 @@ package storages
 import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/entities"
 	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type UserStorage struct {
@@ -42,4 +43,10 @@ func (us UserStorage) GetAll() ([]entities.User, error) {
 	var users []entities.User
 	err := us.DB.Find(&users).Error
 	return users, err
+}
+
+func (us UserStorage) GetCountByCreatedAt(from time.Time, to time.Time) (int, error) {
+	var users []entities.User
+	err := us.DB.Where("created_at > ? AND created_at < ?", from, to).Find(&users).Error
+	return len(users), err
 }
