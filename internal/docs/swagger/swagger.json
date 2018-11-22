@@ -1,14 +1,14 @@
 {
-  "swagger": "2.0",
+    "swagger": "2.0",
     "info": {
-      "description": "Документация по методам API приложения \"Кредитный портфель\"",
-      "title": "Loan Portfolio API doc",
+        "description": "Документация по методам API приложения \"Кредитный портфель\"",
+        "title": "Loan Portfolio API doc",
         "contact": {},
-      "license": {},
-      "version": "0.5"
+        "license": {},
+        "version": "0.5"
     },
-  "host": "{{.Host}}",
-  "basePath": "{{.BasePath}}",
+    "host": "{{.Host}}",
+    "basePath": "{{.BasePath}}",
     "paths": {
         "/partners": {
             "get": {
@@ -350,41 +350,41 @@
                 }
             }
         },
-      "/stats/users/registered": {
-        "get": {
-          "description": "Метод возвращает число новых пользователей за данный период",
-          "produces": [
-            "application/json"
-          ],
-          "tags": [
-            "Statistics"
-          ],
-          "summary": "Получить количество зарегистрированных за данный период пользователей",
-          "parameters": [
-            {
-              "type": "string",
-              "description": "Начало периода",
-              "name": "from",
-              "in": "query"
-            },
-            {
-              "type": "string",
-              "description": "Конец периода",
-              "name": "to",
-              "in": "query"
+        "/stats/users/registered": {
+            "get": {
+                "description": "Метод возвращает число новых пользователей за данный период",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Получить количество зарегистрированных за данный период пользователей",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Начало периода",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Конец периода",
+                        "name": "to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/responses.UserStat"
+                        }
+                    },
+                    "422": {}
+                }
             }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "type": "object",
-                "$ref": "#/definitions/responses.UserStat"
-              }
-            },
-            "422": {}
-          }
-        }
         }
     },
     "definitions": {
@@ -489,6 +489,17 @@
                 },
                 "views": {
                     "type": "integer"
+                }
+            }
+        },
+        "entities.DayCount": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "string"
                 }
             }
         },
@@ -627,16 +638,19 @@
                 }
             }
         },
-      "responses.UserStat": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "integer"
-          },
-          "status": {
-            "type": "string"
-          }
-        }
+        "responses.UserStat": {
+            "type": "object",
+            "properties": {
+                "dayCounts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.DayCount"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
         }
     }
 }

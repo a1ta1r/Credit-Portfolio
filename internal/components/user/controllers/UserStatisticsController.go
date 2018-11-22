@@ -50,7 +50,7 @@ func (usc UserStatisticsController) GetRegisteredUsersCount(ctx *gin.Context) {
 		return
 	}
 
-	users, err := usc.userStat.GetRegisteredUsersCount(from, to)
+	users, err := usc.userStat.GetRegisteredUsersDayCounts(from, to)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": codes.InternalError})
 		return
@@ -58,7 +58,7 @@ func (usc UserStatisticsController) GetRegisteredUsersCount(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": "OK",
-		"count":  users,
+		"dayCounts":  users,
 	})
 }
 

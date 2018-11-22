@@ -2,6 +2,7 @@ package storages
 
 import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/entities"
+	userEntities "github.com/a1ta1r/Credit-Portfolio/internal/components/user/entities"
 	"github.com/jinzhu/gorm"
 	"time"
 )
@@ -49,4 +50,11 @@ func (us UserStorage) GetCountByCreatedAt(from time.Time, to time.Time) (int, er
 	var users []entities.User
 	err := us.DB.Where("created_at > ? AND created_at < ?", from, to).Find(&users).Error
 	return len(users), err
+}
+
+func (us UserStorage) GetCountsByCreatedAt(from time.Time, to time.Time) ([]userEntities.DayCount, error) {
+	var dayCounts []userEntities.DayCount
+	err := us.DB.Table("users").Select("date_trunc('day', created_at) as date, count(id) as count").Where("created_at is not null").Group("date_trunc('day', created_at)").Scan(&dayCounts).Error
+
+	return dayCounts, err
 }
