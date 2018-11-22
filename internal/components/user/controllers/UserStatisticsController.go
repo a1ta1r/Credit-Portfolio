@@ -61,3 +61,4 @@ func (usc UserStatisticsController) GetRegisteredUsersCount(ctx *gin.Context) {
 		"count":  users,
 	})
 }
+

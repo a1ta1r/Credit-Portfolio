@@ -13,6 +13,7 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/system"
 	statControllers "github.com/a1ta1r/Credit-Portfolio/internal/components/user/controllers"
 	statServices "github.com/a1ta1r/Credit-Portfolio/internal/components/user/services"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/user/user_handlers"
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -50,6 +51,8 @@ func main() {
 	agendaService := services.NewAgendaService(db)
 	userStatService := statServices.UserStatisticsService{storageContainer.UserStorage}
 
+	lastSeenHandler := user_handlers.NewLastSeenHandler(userService)
+
 	healthController := system.NewHealthController(&db)
 	userController := loanControllers.NewUserController(userService)
 	commonController := controllers.NewCommonController(&db)
@@ -81,7 +84,7 @@ func main() {
 	router.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	//basicAccess := router.Group("/")
-	basicAccess := router.Group("/", userJwtMiddleware.MiddlewareFunc())
+	basicAccess := router.Group("/", userJwtMiddleware.MiddlewareFunc(), lastSeenHandler.UpdateLastSeen)
 	{
 		basicAccess.GET("/refreshToken", userJwtMiddleware.RefreshHandler)
 
@@ -120,7 +123,6 @@ func main() {
 		basicAccess.POST("/calculate", calculationController.CalculateCredit)
 
 		basicAccess.GET("/agenda", agendaController.GetAgendaElements)
-
 	}
 
 	//TODO убрать рекламщиков в вип доступ для админа

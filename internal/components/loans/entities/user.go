@@ -17,6 +17,7 @@ type User struct {
 	PaymentPlans []PaymentPlan `json:"paymentPlans",default:"[]"`
 	Incomes      []Income      `json:"incomes",default:"[]"`
 	Expenses     []Expense     `json:"expenses",default:"[]"`
+	LastSeen     time.Time     `json:"lastSeen"`
 }
 
 func (u User) GetHashedPassword() string {
