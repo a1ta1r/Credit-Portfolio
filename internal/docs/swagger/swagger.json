@@ -350,6 +350,78 @@
                 }
             }
         },
+        "/stats/users/active": {
+            "get": {
+                "description": "Метод возвращает число активных пользователей за данный период",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Получить количество активных за данный период пользователей",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Начало периода",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Конец периода",
+                        "name": "to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/responses.UserStat"
+                        }
+                    },
+                    "422": {}
+                }
+            }
+        },
+        "/stats/users/deleted": {
+            "get": {
+                "description": "Метод возвращает число удаленных пользователей за данный период",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Получить количество удаленных за данный период пользователей",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Начало периода",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Конец периода",
+                        "name": "to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/responses.UserStat"
+                        }
+                    },
+                    "422": {}
+                }
+            }
+        },
         "/stats/users/registered": {
             "get": {
                 "description": "Метод возвращает число новых пользователей за данный период",

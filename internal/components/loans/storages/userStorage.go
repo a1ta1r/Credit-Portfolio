@@ -58,3 +58,17 @@ func (us UserStorage) GetCountsByCreatedAt(from time.Time, to time.Time) ([]user
 
 	return dayCounts, err
 }
+
+func (us UserStorage) GetCountsByDeletedAt(from time.Time, to time.Time) ([]userEntities.DayCount, error) {
+	var dayCounts []userEntities.DayCount
+	err := us.DB.Table("users").Select("date_trunc('day', deleted_at) as date, count(id) as count").Where("deleted_at is not null").Group("date_trunc('day', deleted_at)").Scan(&dayCounts).Error
+
+	return dayCounts, err
+}
+
+func (us UserStorage) GetCountsByLastSeen(from time.Time, to time.Time) ([]userEntities.DayCount, error) {
+	var dayCounts []userEntities.DayCount
+	err := us.DB.Table("users").Select("date_trunc('day', last_seen) as date, count(id) as count").Where("last_seen is not null").Group("date_trunc('day', last_seen)").Scan(&dayCounts).Error
+
+	return dayCounts, err
+}

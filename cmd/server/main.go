@@ -149,6 +149,8 @@ func main() {
 	systemStat := router.Group("/stats")
 	{
 		systemStat.GET("/users/registered", userStatController.GetRegisteredUsersCount)
+		systemStat.GET("/users/deleted", userStatController.GetDeletedUsersCount)
+		systemStat.GET("/users/active", userStatController.GetLastSeenUsersCount)
 	}
 
 	private := func(c *gin.Context) {

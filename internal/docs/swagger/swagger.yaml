@@ -418,6 +418,54 @@ paths:
       summary: Обновить рекламное объявление
       tags:
       - Advertisements
+  /stats/users/active:
+    get:
+      description: Метод возвращает число активных пользователей за данный период
+      parameters:
+      - description: Начало периода
+        in: query
+        name: from
+        type: string
+      - description: Конец периода
+        in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserStat'
+            type: object
+        "422": {}
+      summary: Получить количество активных за данный период пользователей
+      tags:
+      - Statistics
+  /stats/users/deleted:
+    get:
+      description: Метод возвращает число удаленных пользователей за данный период
+      parameters:
+      - description: Начало периода
+        in: query
+        name: from
+        type: string
+      - description: Конец периода
+        in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserStat'
+            type: object
+        "422": {}
+      summary: Получить количество удаленных за данный период пользователей
+      tags:
+      - Statistics
   /stats/users/registered:
     get:
       description: Метод возвращает число новых пользователей за данный период
