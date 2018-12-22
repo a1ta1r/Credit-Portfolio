@@ -9,6 +9,8 @@ import (
 	"github.com/jinzhu/gorm"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/mssql"
+
 )
 
 var sqlConn *gorm.DB
@@ -16,7 +18,9 @@ var sqlConn *gorm.DB
 // GetConnection returns Connection to an MSSQL database using GORM
 func GetConnection() (gorm.DB, error) {
 	if sqlConn == nil {
-		if conn, err := getPostgres(); err == nil {
+		if conn, err := getMssql(); err == nil {
+			sqlConn = &conn
+		} else if conn, err = getPostgres(); err == nil {
 			sqlConn = &conn
 		} else {
 			return gorm.DB{}, err
@@ -26,7 +30,7 @@ func GetConnection() (gorm.DB, error) {
 }
 
 func getMssql() (gorm.DB, error) {
-	conn, err := gorm.Open("mssql", os.Getenv("MSSQL"))
+	conn, err := gorm.Open("mssql", os.Getenv("CREDIT_API_MSSQL"))
 	if err != nil {
 		println(err.Error())
 		return *conn, err
@@ -35,7 +39,7 @@ func getMssql() (gorm.DB, error) {
 }
 
 func getPostgres() (gorm.DB, error) {
-	conn, err := gorm.Open("postgres", os.Getenv("POSTGRES"))
+	conn, err := gorm.Open("postgres", os.Getenv("CREDIT_API_POSTGRES"))
 	if err != nil {
 		println(err.Error())
 		return *conn, err

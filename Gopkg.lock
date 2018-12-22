@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:b62a3c5b37db602bf1158e921da1a762315a4c37855fd418a14498aa87a342d5"
+  name = "cloud.google.com/go"
+  packages = ["civil"]
+  pruneopts = "UT"
+  revision = "74b12019e2aa53ec27882158f59192d7cd6d1998"
+  version = "v0.33.1"
+
+[[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
   name = "github.com/PuerkitoBio/purell"
   packages = ["."]
@@ -27,6 +35,17 @@
   ]
   pruneopts = "UT"
   revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
+
+[[projects]]
+  branch = "master"
+  digest = "1:0fd9da444782c2defb1352dc098f55b8b42c538787e29e45677a1dc40ff0ab11"
+  name = "github.com/denisenkom/go-mssqldb"
+  packages = [
+    ".",
+    "internal/cp",
+  ]
+  pruneopts = "UT"
+  revision = "4e0d7dc8888fbb59764060e99b7b68e77a6f9698"
 
 [[projects]]
   digest = "1:2b59aca2665ff804f6606c8829eaee133ddd3aefbc841014660d961b0034f888"
@@ -106,10 +125,11 @@
   revision = "3605ed457bf7f8caa1371b4fafadadc026673479"
 
 [[projects]]
-  digest = "1:6895fbe5a10c5aebd1965cac6f6905dcdb21bee01e08912d3ba6a805c2485f6a"
+  digest = "1:11c3c67e946d1fe143f768037eb4b9332f418e13d9da25de80b35d61a8685666"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
+    "dialects/mssql",
     "dialects/postgres",
   ]
   pruneopts = "UT"
@@ -217,11 +237,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:1ecf2a49df33be51e757d0033d5d51d5f784f35f68e5a38f797b2d3f03357d71"
+  digest = "1:68344dbfaa4179bb50a583eb8172ace3f1edaf3aebc24e68c03f549f6e6b60dc"
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
     "blowfish",
+    "md4",
   ]
   pruneopts = "UT"
   revision = "7e6ffbd038512da5ae7ce06c196764f393990be1"
@@ -313,6 +334,7 @@
     "github.com/gin-gonic/gin/binding",
     "github.com/iancoleman/strcase",
     "github.com/jinzhu/gorm",
+    "github.com/jinzhu/gorm/dialects/mssql",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/joho/godotenv",
     "github.com/swaggo/gin-swagger",

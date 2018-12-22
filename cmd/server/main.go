@@ -14,14 +14,14 @@ import (
 	statControllers "github.com/a1ta1r/Credit-Portfolio/internal/components/user/controllers"
 	statServices "github.com/a1ta1r/Credit-Portfolio/internal/components/user/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/user/user_handlers"
+	_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"net/http"
-
-	_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
+	"os"
 )
 
 // @title Loan Portfolio API doc
@@ -39,10 +39,10 @@ func main() {
 	//println("Dropping all tables")
 	//app.DropAllTables()
 	//println("Done. Tables dropped.")
-	//
-	//println("Synchronizing entities with DB")
-	//app.SyncModelsWithSchema()
-	//println("Done. DB Modified.")
+
+	println("Synchronizing entities with DB")
+	app.SyncModelsWithSchema()
+	println("Done. DB Modified.")
 
 	storageContainer := common.NewStorageContainer(db)
 
@@ -81,10 +81,10 @@ func main() {
 	adminJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Admin)
 	merchantJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Ads)
 
-	router.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
+	baseRoute := router.Group(os.Getenv("CREDIT_API_PREFIX"))
+	baseRoute.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	//basicAccess := router.Group("/")
-	basicAccess := router.Group("/", userJwtMiddleware.MiddlewareFunc(), lastSeenHandler.UpdateLastSeen)
+	basicAccess := baseRoute.Group("/", userJwtMiddleware.MiddlewareFunc(), lastSeenHandler.UpdateLastSeen)
 	{
 		basicAccess.GET("/refreshToken", userJwtMiddleware.RefreshHandler)
 
@@ -126,7 +126,7 @@ func main() {
 	}
 
 	//TODO убрать рекламщиков в вип доступ для админа
-	advertisers := router.Group("/partners")
+	advertisers := baseRoute.Group("/partners")
 	{
 		advertisers.GET("/:id", advertiserController.GetAdvertiser)
 		advertisers.GET("", advertiserController.GetAdvertisers)
@@ -137,7 +137,7 @@ func main() {
 
 	}
 
-	advertisements := router.Group("/promotions")
+	advertisements := baseRoute.Group("/promotions")
 	{
 		advertisements.GET("/:id", advertisementController.GetAdvertisement)
 		advertisements.GET("", advertisementController.GetAdvertisements)
@@ -146,7 +146,7 @@ func main() {
 		advertisements.POST("", advertisementController.AddAdvertisement)
 	}
 
-	systemStat := router.Group("/stats")
+	systemStat := baseRoute.Group("/stats")
 	{
 		systemStat.GET("/users/registered", userStatController.GetRegisteredUsersCount)
 		systemStat.GET("/users/deleted", userStatController.GetDeletedUsersCount)
@@ -169,10 +169,10 @@ func main() {
 		merchantAccess.GET("", private)
 	}
 
-	router.GET("/health", healthController.HealthCheck)
+	baseRoute.GET("/health", healthController.HealthCheck)
 
-	router.POST("/signin", userJwtMiddleware.LoginHandler)
-	router.POST("/signup", userController.AddUser)
+	baseRoute.POST("/signin", userJwtMiddleware.LoginHandler)
+	baseRoute.POST("/signup", userController.AddUser)
 
 	router.GET("/bank/:id", commonController.GetBank)
 	router.POST("/bank", commonController.AddBank)
@@ -186,5 +186,17 @@ func main() {
 
 	router.NoRoute(handlers.NotFound)
 
-	router.Run()
+	port := "8080"
+	if os.Getenv("ASPNETCORE_PORT") != "" { // get enviroment variable that set by ACNM
+		port = os.Getenv("ASPNETCORE_PORT")
+	} else if os.Getenv("CREDIT_API_PORT") != "" {
+		port = os.Getenv("CREDIT_API_PORT")
+	}
+
+	host := "127.0.0.1"
+	if os.Getenv("CREDIT_API_HOST") != "" {
+		host = os.Getenv("CREDIT_API_HOST")
+	}
+
+	router.Run(host + ":" + port)
 }
