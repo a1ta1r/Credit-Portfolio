@@ -39,10 +39,10 @@ func main() {
 	//println("Dropping all tables")
 	//app.DropAllTables()
 	//println("Done. Tables dropped.")
-
-	println("Synchronizing entities with DB")
-	app.SyncModelsWithSchema()
-	println("Done. DB Modified.")
+	//
+	//println("Synchronizing entities with DB")
+	//app.SyncModelsWithSchema()
+	//println("Done. DB Modified.")
 
 	storageContainer := common.NewStorageContainer(db)
 
