@@ -28,7 +28,7 @@ import (
 // @version 0.5
 // @description Документация по методам API приложения "Кредитный портфель"
 func main() {
-	godotenv.Load()
+	godotenv.Load("env.config")
 
 	db, err := app.GetConnection()
 	defer db.Close()
