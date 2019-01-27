@@ -1,6 +1,20 @@
-GET http://localhost:8080/agenda HTTP/2.0
+GET http://localhost:9034/promotions/1/banners
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MzUzOTk2NjYsImlkIjoiSm9obiBTbWl0aCIsIm9yaWdfaWF0IjoxNTM1Mzk2MDY2LCJyb2xlIjowLCJ1c2VybmFtZSI6IkpvaG4gU21pdGgifQ.u0wmQYO4PBxBB4Q-hrHfsE3cZnA-HYEmdP3I9HknAso
 
 ###
 
+POST http://localhost:9034/banners
+content-type: application/json
+
+< new_banner.json
+
+###
+
+
+POST http://localhost:9034/banner_places
+content-type: application/json
+
+< new_banner_place.json
+
+###

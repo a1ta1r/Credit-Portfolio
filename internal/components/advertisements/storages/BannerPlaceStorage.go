@@ -21,11 +21,11 @@ func (as BannerPlaceStorage) GetBannerPlaces() ([]entities.BannerPlace, error) {
 	return bannerPlaces, err
 }
 
-func (as BannerPlaceStorage) CreateBannerPlace(bannerPlace entities.BannerPlace) error {
+func (as BannerPlaceStorage) CreateBannerPlace(bannerPlace *entities.BannerPlace) error {
 	return as.DB.Create(bannerPlace).Error
 }
 
-func (as BannerPlaceStorage) UpdateBannerPlace(bannerPlace entities.BannerPlace) error {
+func (as BannerPlaceStorage) UpdateBannerPlace(bannerPlace *entities.BannerPlace) error {
 	return as.DB.Save(bannerPlace).Error
 }
 

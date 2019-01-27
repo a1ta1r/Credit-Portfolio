@@ -10,6 +10,7 @@ type Banner struct {
 	Text                string      `json:"text"`
 	UniqueViewsRequired uint        `json:"uniqueViewsRequired"`
 	Views               uint        `json:"views"`
+	AdvertisementLink   string      `json:"advertisementLink"`
 	UniqueViews         uint        `json:"uniqueViews"`
 	BannerPlace         BannerPlace `json:"-" gorm:"foreignkey:BannerPlaceID"`
 	BannerPlaceID       uint        `json:"bannerPlaceId"`

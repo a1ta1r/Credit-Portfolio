@@ -27,11 +27,11 @@ func (as BannerStorage) GetBanners() ([]entities.Banner, error) {
 	return banners, err
 }
 
-func (as BannerStorage) CreateBanner(banner entities.Banner) error {
-	return as.DB.Create(banner).Error
+func (as BannerStorage) CreateBanner(banner *entities.Banner) error {
+	return as.DB.Create(&banner).Error
 }
 
-func (as BannerStorage) UpdateBanner(banner entities.Banner) error {
+func (as BannerStorage) UpdateBanner(banner *entities.Banner) error {
 	return as.DB.Save(banner).Error
 }
 

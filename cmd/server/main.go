@@ -69,6 +69,8 @@ func main() {
 	advertisementController := adsControllers.NewAdvertisementController(
 		storageContainer.AdvertisementStorage, storageContainer.AdvertiserStorage)
 	userStatController := statControllers.NewUserStatisticsController(userStatService)
+	bannersController := adsControllers.NewBannersController(storageContainer.BannerStorage)
+	bannerPlacesController := adsControllers.NewBannerPlacesController(storageContainer.BannerPlaceStorage)
 
 	router := gin.New()
 
@@ -144,6 +146,24 @@ func main() {
 		advertisements.DELETE("/:id", advertisementController.DeleteAdvertisement)
 		advertisements.PUT("/:id", advertisementController.UpdateAdvertisement)
 		advertisements.POST("", advertisementController.AddAdvertisement)
+		advertisements.GET("/:id/banners", bannersController.GetBannersByAdvertisementID)
+	}
+
+	banners := baseRoute.Group("/banners")
+	{
+		banners.GET("/:id", bannersController.GetBannerByID)
+		banners.DELETE("/:id", bannersController.DeleteBannerByID)
+		banners.PUT("/:id", bannersController.UpdateBanner)
+		banners.POST("", bannersController.AddBanner)
+	}
+
+	bannerPlaces := baseRoute.Group("/banner_places")
+	{
+		bannerPlaces.GET("", bannerPlacesController.GetBannerPlaces)
+		bannerPlaces.GET("/:id", bannerPlacesController.GetBannerPlaceByID)
+		bannerPlaces.DELETE("/:id", bannerPlacesController.DeleteBannerPlaceByID)
+		bannerPlaces.POST("", bannerPlacesController.AddBannerPlace)
+		bannerPlaces.PUT("/:id", bannerPlacesController.UpdateBannerPlace)
 	}
 
 	systemStat := baseRoute.Group("/stats")
