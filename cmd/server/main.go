@@ -207,13 +207,17 @@ func main() {
 	router.NoRoute(handlers.NotFound)
 
 	port := "8080"
-	if os.Getenv("ASPNETCORE_PORT") != "" { // get enviroment variable that set by ACNM
+	if os.Getenv("ASPNETCORE_PORT") != "" {
 		port = os.Getenv("ASPNETCORE_PORT")
 	} else if os.Getenv("CREDIT_API_PORT") != "" {
 		port = os.Getenv("CREDIT_API_PORT")
 	}
 
-	host := "127.0.0.1"
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+
+	host := ""
 	if os.Getenv("CREDIT_API_HOST") != "" {
 		host = os.Getenv("CREDIT_API_HOST")
 	}
