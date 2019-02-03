@@ -14,7 +14,7 @@ import (
 	statControllers "github.com/a1ta1r/Credit-Portfolio/internal/components/user/controllers"
 	statServices "github.com/a1ta1r/Credit-Portfolio/internal/components/user/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/user/user_handlers"
-	_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
+	//_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -36,13 +36,13 @@ func main() {
 		panic(codes.ConnectionError)
 	}
 
-	//println("Dropping all tables")
-	//app.DropAllTables()
-	//println("Done. Tables dropped.")
-	//
-	//println("Synchronizing entities with DB")
-	//app.SyncModelsWithSchema()
-	//println("Done. DB Modified.")
+	println("Dropping all tables")
+	app.DropAllTables()
+	println("Done. Tables dropped.")
+
+	println("Synchronizing entities with DB")
+	app.SyncModelsWithSchema()
+	println("Done. DB Modified.")
 
 	storageContainer := common.NewStorageContainer(db)
 

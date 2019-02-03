@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/entities"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
@@ -9,6 +10,8 @@ import (
 	"gopkg.in/appleboy/gin-jwt.v2"
 	"time"
 )
+
+var errInvalidCredentials = errors.New("username or password is invalid")
 
 type JwtWrapper struct {
 	userService services.UserService
@@ -52,11 +55,11 @@ func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	var err error = nil
 	for i := 0; i < len(users); i++ {
 		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
-		if username == users[i].Username && err == nil {
+		if username == users[i].Username && users[i].Role == roles.Basic && err == nil {
 			return username, err
 		}
 	}
-	return "", err
+	return "", errInvalidCredentials
 }
 
 func (w JwtWrapper) adminRoleAuthFunc(c *gin.Context) (interface{}, error) {
@@ -73,7 +76,7 @@ func (w JwtWrapper) adminRoleAuthFunc(c *gin.Context) (interface{}, error) {
 			return username, err
 		}
 	}
-	return "", err
+	return "", errInvalidCredentials
 }
 
 func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
@@ -90,7 +93,7 @@ func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
 			return username, err
 		}
 	}
-	return "", err
+	return "", errInvalidCredentials
 }
 
 func (w *JwtWrapper) Payload(username interface{}) jwt.MapClaims {

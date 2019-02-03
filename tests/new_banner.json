@@ -1,0 +1,9 @@
+{
+  "advertisementId": 1,
+  "pictureUrl": "https://goo.gl/FyH4GV",
+  "text": "a banner",
+  "uniqueViewsRequired": 10,
+  "advertisementLink": "https://goo.gl/3dpPFB",
+  "bannerPlaceId": 1,
+  "isVisible": true
+}

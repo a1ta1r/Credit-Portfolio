@@ -18,3 +18,10 @@ content-type: application/json
 < new_banner_place.json
 
 ###
+
+POST http://localhost:8080/signup
+content-type: application/json
+
+< new_user.json
+
+###

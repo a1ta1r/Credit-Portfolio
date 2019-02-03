@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
-	"github.com/a1ta1r/Credit-Portfolio/internal/components/errors"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/storages"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/errors"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
 	"github.com/a1ta1r/Credit-Portfolio/internal/specification/requests"
 	_ "github.com/a1ta1r/Credit-Portfolio/internal/specification/responses"
@@ -167,20 +167,5 @@ func (ac AdvertiserController) UpdateAdvertiser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":     "OK",
 		"advertiser": advertiser,
-	})
-}
-
-func (ac AdvertiserController) GetBannersByAdvertisement(c *gin.Context) {
-	var banners []entities.Banner
-	id, err := strconv.ParseUint(c.Param("adsid"), 10, 32)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": codes.BadID})
-		return
-	}
-	banners, _ = ac.bannerStorage.GetBannersByAdvertisement(uint(id))
-	c.JSON(http.StatusOK, gin.H{
-		"status":  "OK",
-		"count":   len(banners),
-		"banners": banners,
 	})
 }

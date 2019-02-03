@@ -10,7 +10,7 @@ type User struct {
 	ID           uint          `gorm:"primary_key" json:"id"`
 	CreatedAt    time.Time     `json:"-"`
 	UpdatedAt    time.Time     `json:"-"`
-	DeletedAt    time.Time     `json:"-"`
+	DeletedAt    *time.Time    `json:"-"`
 	Username     string        `json:"username" gorm:"type:varchar(100);unique_index"`
 	Email        string        `json:"email" gorm:"type:varchar(100);unique_index"`
 	Password     string        `json:"password,omitempty"`
@@ -18,7 +18,7 @@ type User struct {
 	PaymentPlans []PaymentPlan `json:"paymentPlans",default:"[]"`
 	Incomes      []Income      `json:"incomes",default:"[]"`
 	Expenses     []Expense     `json:"expenses",default:"[]"`
-	LastSeen     time.Time     `json:"lastSeen"`
+	LastSeen     *time.Time    `json:"lastSeen"`
 }
 
 func (u User) GetHashedPassword() string {

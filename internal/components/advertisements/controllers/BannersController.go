@@ -21,6 +21,16 @@ func NewBannersController(bs storages.BannerStorage) BannersController {
 	return BannersController{bannerStorage: bs}
 }
 
+// @Tags Banners
+// @Summary Получить баннеры по ID рекламного объявления
+// @Description Метод возвращает набор баннеров по ID рекламного объявления.
+// @Accept json
+// @Produce  json
+// @Param id path int true "ID рекламного объявления"
+// @Success 200 {object} responses.BannersByAds
+// @Failure 404
+// @Failure 422
+// @Router /promotions/{id}/banners [get]
 func (bc BannersController) GetBannersByAdvertisementID(c *gin.Context) {
 	var banners []entities.Banner
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -43,6 +53,16 @@ func (bc BannersController) GetBannersByAdvertisementID(c *gin.Context) {
 	})
 }
 
+// @Tags Banners
+// @Summary Получить баннер по ID
+// @Description Метод возвращает один баннер c заданным ID
+// @Accept json
+// @Produce  json
+// @Param id path int true "ID баннера"
+// @Success 200 {object} responses.OneBanner
+// @Failure 404
+// @Failure 422
+// @Router /banners/{id} [get]
 func (bc BannersController) GetBannerByID(c *gin.Context) {
 	var banner entities.Banner
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -64,6 +84,15 @@ func (bc BannersController) GetBannerByID(c *gin.Context) {
 	})
 }
 
+// @Tags Banners
+// @Summary Удалить баннер по ID
+// @Description Метод удаляет один баннер c заданным ID
+// @Accept json
+// @Produce  json
+// @Param id path int true "ID баннера"
+// @Success 200
+// @Failure 422
+// @Router /banners/{id} [delete]
 func (bc BannersController) DeleteBannerByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -75,6 +104,15 @@ func (bc BannersController) DeleteBannerByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": codes.ResDeleted})
 }
 
+// @Tags Banners
+// @Summary Добавить новый баннер
+// @Description Метод создает один баннер c заданными параметрами
+// @Accept json
+// @Produce  json
+// @Param advertiser body requests.NewBanner true "Данные о баннере"
+// @Success 200 {object} responses.OneBanner
+// @Failure 422
+// @Router /banners [post]
 func (bc BannersController) AddBanner(c *gin.Context) {
 	var request requests.NewBanner
 	var banner entities.Banner
@@ -97,6 +135,17 @@ func (bc BannersController) AddBanner(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"banner": banner})
 }
 
+// @Tags Banners
+// @Summary Добавить новый баннер
+// @Description Метод создает один баннер c заданными параметрами
+// @Accept json
+// @Produce  json
+// @Param id path int true "ID баннера"
+// @Param advertiser body requests.UpdateBanner true "Данные о баннере"
+// @Success 200 {object} responses.OneBanner
+// @Failure 404
+// @Failure 422
+// @Router /banners/{id} [put]
 func (bc BannersController) UpdateBanner(c *gin.Context) {
 	var request requests.UpdateBanner
 	var banner entities.Banner
