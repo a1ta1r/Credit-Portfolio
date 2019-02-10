@@ -91,8 +91,9 @@ func (incomeController IncomeController) UpdateIncomeByIdAndJWT(c *gin.Context) 
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
 		return
 	}
-	incomeController.gormDB.Where("id = ? AND user_id = ?", income.ID, userId).First(&income, id)
-	if income.ID == 0 {
+	income.ID = uint(id)
+	notFound := incomeController.gormDB.Where("id = ? AND user_id = ?", income.ID, userId).First(&income, id).RecordNotFound()
+	if notFound {
 		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
 		return
 	}
@@ -103,7 +104,12 @@ func (incomeController IncomeController) UpdateIncomeByIdAndJWT(c *gin.Context) 
 
 func (incomeController IncomeController) DeleteIncomeByIdAndJWT(c *gin.Context) {
 	var income entities.Income
-	c.BindJSON(&income)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	income.ID = uint(id)
 	userId := uint(jwt.ExtractClaims(c)["user_id"].(float64))
 	notFound := incomeController.gormDB.Where("id = ? AND user_id = ?", income.ID, userId).Delete(&income).RecordNotFound()
 	if notFound {
