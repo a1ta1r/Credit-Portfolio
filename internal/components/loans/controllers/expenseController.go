@@ -103,7 +103,12 @@ func (expenseController ExpenseController) UpdateExpenseByIdAndJWT(c *gin.Contex
 
 func (expenseController ExpenseController) DeleteExpenseByIdAndJWT(c *gin.Context) {
 	var expense entities.Expense
-	c.BindJSON(&expense)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"message": codes.BadID})
+		return
+	}
+	expense.ID = uint(id)
 	userId := uint(jwt.ExtractClaims(c)["user_id"].(float64))
 	notFound := expenseController.gormDB.Where("id = ? AND user_id = ?", expense.ID, userId).Delete(&expense).RecordNotFound()
 	if notFound {
