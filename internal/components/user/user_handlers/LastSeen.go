@@ -26,6 +26,6 @@ func (lsh LastSeenHandler) UpdateLastSeen(ctx *gin.Context) {
 		return
 	}
 
-	*user.LastSeen = time.Now()
+	user.LastSeen = time.Now()
 	lsh.userService.UpdateUser(user)
 }

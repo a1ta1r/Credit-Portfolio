@@ -19,7 +19,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/signup
+POST http://localhost:8080/signin
 content-type: application/json
 
 < new_user.json

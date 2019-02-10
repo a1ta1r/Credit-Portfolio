@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/a1ta1r/Credit-Portfolio/internal/codes"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/services"
@@ -119,6 +120,7 @@ func (uc UserController) AddUser(c *gin.Context) {
 	user.Role = roles.Basic
 	var mailPassword = user.Password
 	user.Password = user.GetHashedPassword()
+	user.LastSeen = time.Now()
 	user = uc.userService.CreateUser(user)
 	mailer.SendMail(user.Email, user.Username, mailPassword)
 	user = uc.userService.GetUserByUsername(user.Username)

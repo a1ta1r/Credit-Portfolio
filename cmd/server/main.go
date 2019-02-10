@@ -13,10 +13,9 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/system"
 	statControllers "github.com/a1ta1r/Credit-Portfolio/internal/components/user/controllers"
 	statServices "github.com/a1ta1r/Credit-Portfolio/internal/components/user/services"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/user/user_handlers"
+	_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
 	"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
-
-	//_ "github.com/a1ta1r/Credit-Portfolio/internal/docs" //swagger
-	//"github.com/a1ta1r/Credit-Portfolio/internal/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/swaggo/gin-swagger"
@@ -52,7 +51,7 @@ func main() {
 	agendaService := services.NewAgendaService(db)
 	userStatService := statServices.UserStatisticsService{storageContainer.UserStorage}
 
-	//lastSeenHandler := user_handlers.NewLastSeenHandler(userService)
+	lastSeenHandler := user_handlers.NewLastSeenHandler(userService)
 
 	healthController := system.NewHealthController(&db)
 	userController := loanControllers.NewUserController(userService)
@@ -75,9 +74,9 @@ func main() {
 
 	router := gin.New()
 
-	//router.Use(handlers.PanicHandler)
-	//router.Use(gin.Logger())
-	//router.Use(handlers.CorsHandler())
+	router.Use(handlers.PanicHandler)
+	router.Use(gin.Logger())
+	router.Use(handlers.CorsHandler())
 
 	jwtWrapper := auth.NewJwtWrapper(userService)
 	userJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Basic)
@@ -87,7 +86,7 @@ func main() {
 	baseRoute := router.Group(os.Getenv("CREDIT_API_PREFIX"))
 	baseRoute.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	//basicAccess := router.Group("/")
-	basicAccess := baseRoute.Group("/", userJwtMiddleware.MiddlewareFunc())
+	basicAccess := baseRoute.Group("/", userJwtMiddleware.MiddlewareFunc(), lastSeenHandler.UpdateLastSeen)
 	{
 		basicAccess.GET("/refreshToken", userJwtMiddleware.RefreshHandler)
 
@@ -203,7 +202,7 @@ func main() {
 	router.GET("/currency/:id", commonController.GetCurrency)
 	router.POST("/currency", commonController.AddCurrency)
 	router.DELETE("/currency/:id", commonController.DeleteCurrency)
-	//router.PUT("/currency/:id", commonController.UpdateCurrency)
+	router.PUT("/currency/:id", commonController.UpdateCurrency)
 
 	router.NoRoute(handlers.NotFound)
 
