@@ -22,13 +22,13 @@ func (us UserStorage) Exists(user entities.User) (bool, error) {
 
 func (us UserStorage) GetByID(id uint) (entities.User, error) {
 	var user entities.User
-	err := us.DB.First(&user, id).Error
+	err := us.DB.Preload("Incomes").Preload("Expenses").Preload("PaymentPlans").First(&user, id).Error
 	return user, err
 }
 
 func (us UserStorage) GetByUsername(username string) (entities.User, error) {
 	var user entities.User
-	err := us.DB.Where("Username = ?", username).First(&user).Error
+	err := us.DB.Where("Username = ?", username).Preload("Incomes").Preload("Expenses").Preload("PaymentPlans").First(&user).Error
 	return user, err
 }
 
