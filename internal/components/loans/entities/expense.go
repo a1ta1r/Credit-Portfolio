@@ -14,7 +14,7 @@ type Expense struct {
 	IsRepeatable   bool       `json:"isRepeatable"` //рекуррентный платеж или нет
 	Frequency      int        `json:"frequency"`
 	PaymentPeriod  TimePeriod `json:"paymentPeriod"`
-	RecurrentCount uint       `json:"recurrentCount"` //число повторений в TimePeriod(4 недели, 12 лет)
+	RecurrentCount int        `json:"recurrentCount"` //число повторений в TimePeriod(4 недели, 12 лет)
 }
 
 func (e Expense) TransformSingle() AgendaElement {
