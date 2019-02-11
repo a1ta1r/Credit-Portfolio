@@ -37,7 +37,7 @@ func (w JwtWrapper) GetJwtMiddleware(role roles.Role) jwt.GinJWTMiddleware {
 	jwtMiddleware := jwt.GinJWTMiddleware{
 		Realm:         "robreid.io",
 		Key:           []byte("portfolio-on-credit-very-very-very-secret-key"),
-		Timeout:       time.Hour,
+		Timeout:       time.Hour * 24 * 7,
 		MaxRefresh:    time.Hour * 24,
 		Authenticator: authFunc,
 		PayloadFunc:   w.Payload,
