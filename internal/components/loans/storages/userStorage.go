@@ -54,21 +54,35 @@ func (us UserStorage) GetCountByCreatedAt(from time.Time, to time.Time) (int, er
 
 func (us UserStorage) GetCountsByCreatedAt(from time.Time, to time.Time) ([]userEntities.DayCount, error) {
 	var dayCounts []userEntities.DayCount
-	err := us.DB.Table("users").Select("date_trunc('day', created_at) as date, count(id) as count").Where("created_at is not null").Group("date_trunc('day', created_at)").Scan(&dayCounts).Error
+	var err error
+	if us.DB.Dialect().GetName() == "postgres" {
+		err = us.DB.Table("users").Select("date_trunc('day', created_at) as date, count(id) as count").Where("created_at is not null").Group("date_trunc('day', created_at)").Scan(&dayCounts).Error
+	} else {
+		err = us.DB.Table("users").Select("cast(created_at As Date) as date, count(id) as count").Where("created_at is not null").Group("cast(created_at As Date)").Scan(&dayCounts).Error
+	}
 
 	return dayCounts, err
 }
 
 func (us UserStorage) GetCountsByDeletedAt(from time.Time, to time.Time) ([]userEntities.DayCount, error) {
 	var dayCounts []userEntities.DayCount
-	err := us.DB.Table("users").Select("date_trunc('day', deleted_at) as date, count(id) as count").Where("deleted_at is not null").Group("date_trunc('day', deleted_at)").Scan(&dayCounts).Error
+	var err error
+	if us.DB.Dialect().GetName() == "postgres" {
+		err = us.DB.Table("users").Select("date_trunc('day', deleted_at) as date, count(id) as count").Where("deleted_at is not null").Group("date_trunc('day', deleted_at)").Scan(&dayCounts).Error
+	} else {
+		err = us.DB.Table("users").Select("cast(deleted_at As Date) as date, count(id) as count").Where("deleted_at is not null").Group("cast(deleted_at As Date)").Scan(&dayCounts).Error
+	}
 
 	return dayCounts, err
 }
 
 func (us UserStorage) GetCountsByLastSeen(from time.Time, to time.Time) ([]userEntities.DayCount, error) {
 	var dayCounts []userEntities.DayCount
-	err := us.DB.Table("users").Select("date_trunc('day', last_seen) as date, count(id) as count").Where("last_seen is not null").Group("date_trunc('day', last_seen)").Scan(&dayCounts).Error
-
+	var err error
+	if us.DB.Dialect().GetName() == "postgres" {
+		err = us.DB.Table("users").Select("date_trunc('day', last_seen) as date, count(id) as count").Where("last_seen is not null").Group("date_trunc('day', last_seen)").Scan(&dayCounts).Error
+	} else {
+		err = us.DB.Table("users").Select("cast(last_seen As Date) as date, count(id) as count").Where("last_seen is not null").Group("cast(last_seen As Date)").Scan(&dayCounts).Error
+	}
 	return dayCounts, err
 }
