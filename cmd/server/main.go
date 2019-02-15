@@ -36,10 +36,10 @@ func main() {
 		panic(codes.ConnectionError)
 	}
 
-	println("Dropping all tables")
-	app.DropAllTables()
-	println("Done. Tables dropped.")
-
+	//println("Dropping all tables")
+	//app.DropAllTables()
+	//println("Done. Tables dropped.")
+	//
 	println("Synchronizing entities with DB")
 	app.SyncModelsWithSchema()
 	println("Done. DB Modified.")
