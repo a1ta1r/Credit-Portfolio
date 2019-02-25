@@ -37,7 +37,7 @@ func (i Income) TransformWithPeriod(from time.Time, to time.Time) []AgendaElemen
 	currentIncomeTime := i.StartDate
 	counter := 0
 	for currentIncomeTime.Before(to) {
-		if i.RecurrentCount - counter > 0 {
+		if i.RecurrentCount-counter > 0 || i.RecurrentCount == -1 {
 			if currentIncomeTime.After(from) {
 				element := AgendaElement{
 					"Income",
@@ -49,8 +49,8 @@ func (i Income) TransformWithPeriod(from time.Time, to time.Time) []AgendaElemen
 				}
 				elements = append(elements, element)
 			}
-				currentIncomeTime = i.getNextPeriod(currentIncomeTime)
-				counter++
+			currentIncomeTime = i.getNextPeriod(currentIncomeTime)
+			counter++
 		} else {
 			break
 		}
