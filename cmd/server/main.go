@@ -151,6 +151,7 @@ func main() {
 
 	banners := baseRoute.Group("/banners")
 	{
+
 		banners.GET("/:id", bannersController.GetBannerByID)
 		banners.DELETE("/:id", bannersController.DeleteBannerByID)
 		banners.PUT("/:id", bannersController.UpdateBanner)
@@ -158,6 +159,7 @@ func main() {
 		banners.PUT("/:id/views", bannersController.IncrViewsForBanner)
 		banners.PUT("/:id/clicks", bannersController.IncrClicksForBanner)
 	}
+	baseRoute.GET("/rand_banner", bannersController.GetRandomBanner)
 
 	bannerPlaces := baseRoute.Group("/banner_places")
 	{

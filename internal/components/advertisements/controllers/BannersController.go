@@ -9,16 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/go-playground/validator.v8"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type BannersController struct {
 	bannerStorage storages.BannerStorage
+	rnd rand.Rand
 }
 
 func NewBannersController(bs storages.BannerStorage) BannersController {
-	return BannersController{bannerStorage: bs}
+	s := rand.NewSource(time.Now().Unix())
+	r := rand.New(s)
+	return BannersController{bannerStorage: bs, rnd:*r}
 }
 
 // @Tags Banners
@@ -220,3 +225,20 @@ func (bc BannersController) IncrClicksForBanner(c *gin.Context) {
 	})
 }
 
+func (bc BannersController) GetRandomBanner(c *gin.Context) {
+
+	banners, _ := bc.bannerStorage.GetBanners()
+	if len(banners)==0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": codes.ResNotFound})
+		return
+	}
+	banner := banners[bc.rnd.Intn(len(banners))]
+	if banner.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": codes.ResNotFound})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": "OK",
+		"banner": banner,
+	})
+}
