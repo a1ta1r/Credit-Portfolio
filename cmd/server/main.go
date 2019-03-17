@@ -20,7 +20,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"net/http"
 	"os"
 )
 
@@ -78,10 +77,10 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(handlers.CorsHandler())
 
-	jwtWrapper := auth.NewJwtWrapper(userService)
+	jwtWrapper := auth.NewJwtWrapper(userService, storageContainer.AdvertiserStorage)
 	userJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Basic)
-	adminJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Admin)
-	merchantJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Ads)
+	//adminJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Admin)
+	//merchantJwtMiddleware := jwtWrapper.GetJwtMiddleware(roles.Ads)
 
 	baseRoute := router.Group(os.Getenv("CREDIT_API_PREFIX"))
 	baseRoute.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -171,22 +170,6 @@ func main() {
 		systemStat.GET("/users/registered", userStatController.GetRegisteredUsersCount)
 		systemStat.GET("/users/deleted", userStatController.GetDeletedUsersCount)
 		systemStat.GET("/users/active", userStatController.GetLastSeenUsersCount)
-	}
-
-	private := func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"hello": "world"})
-	}
-
-	//Не работает чет, доступ есть у всего на свете
-	adminAccess := router.Group("/administration", adminJwtMiddleware.MiddlewareFunc())
-	{
-		adminAccess.GET("/private", private)
-	}
-
-	//Не работает чет, доступ есть у всего на свете
-	merchantAccess := router.Group("/banking", merchantJwtMiddleware.MiddlewareFunc())
-	{
-		merchantAccess.GET("", private)
 	}
 
 	baseRoute.GET("/health", healthController.HealthCheck)

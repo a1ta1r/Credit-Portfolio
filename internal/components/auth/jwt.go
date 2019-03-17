@@ -2,8 +2,10 @@ package auth
 
 import (
 	"errors"
-	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/entities"
-	"github.com/a1ta1r/Credit-Portfolio/internal/components/loans/services"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
+	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/storages"
+	le "github.com/a1ta1r/Credit-Portfolio/internal/components/loans/entities"
+	ls "github.com/a1ta1r/Credit-Portfolio/internal/components/loans/services"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -14,11 +16,12 @@ import (
 var errInvalidCredentials = errors.New("username or password is invalid")
 
 type JwtWrapper struct {
-	userService services.UserService
+	userService ls.UserService
+	advStorage  storages.AdvertiserStorage
 }
 
-func NewJwtWrapper(userService services.UserService) JwtWrapper {
-	return JwtWrapper{userService: userService}
+func NewJwtWrapper(userService ls.UserService, advStorage storages.AdvertiserStorage) JwtWrapper {
+	return JwtWrapper{userService: userService, advStorage: advStorage}
 }
 
 func (w JwtWrapper) GetJwtMiddleware(role roles.Role) jwt.GinJWTMiddleware {
@@ -46,8 +49,8 @@ func (w JwtWrapper) GetJwtMiddleware(role roles.Role) jwt.GinJWTMiddleware {
 }
 
 func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
-	var users []entities.User
-	var testUser entities.User
+	var users []le.User
+	var testUser le.User
 	c.BindJSON(&testUser)
 	username := testUser.Username
 	password := testUser.Password
@@ -59,14 +62,26 @@ func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
 			return username, err
 		}
 	}
+
+	var advertisers []entities.Advertiser
+	advertisers, _ = w.advStorage.GetAdvertisers()
+	for i := 0; i < len(advertisers); i++ {
+		err = bcrypt.CompareHashAndPassword([]byte(advertisers[i].Password), []byte(password))
+		if username == advertisers[i].Username && advertisers[i].Role == roles.Ads && err == nil {
+			return username, err
+		}
+	}
+
+	return "", errInvalidCredentials
+
 	return "", errInvalidCredentials
 }
 
 func (w JwtWrapper) adminRoleAuthFunc(c *gin.Context) (interface{}, error) {
-	var users []entities.User
+	var users []le.User
 	users = w.userService.GetUsers()
 	var err error = nil
-	var testUser entities.User
+	var testUser le.User
 	c.BindJSON(&testUser)
 	username := testUser.Username
 	password := testUser.Password
@@ -80,9 +95,9 @@ func (w JwtWrapper) adminRoleAuthFunc(c *gin.Context) (interface{}, error) {
 }
 
 func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
-	var users []entities.User
+	var users []le.User
 	users = w.userService.GetUsers()
-	var testUser entities.User
+	var testUser le.User
 	c.BindJSON(&testUser)
 	username := testUser.Username
 	password := testUser.Password
@@ -93,6 +108,20 @@ func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
 			return username, err
 		}
 	}
+
+	var advertisers []entities.Advertiser
+	advertisers, _ = w.advStorage.GetAdvertisers()
+	var testAdv entities.Advertiser
+	c.BindJSON(&testAdv)
+	username = testAdv.Username
+	password = testAdv.Password
+	for i := 0; i < len(advertisers); i++ {
+		err = bcrypt.CompareHashAndPassword([]byte(advertisers[i].Password), []byte(password))
+		if username == advertisers[i].Username && advertisers[i].Role == roles.Ads && err == nil {
+			return username, err
+		}
+	}
+
 	return "", errInvalidCredentials
 }
 
