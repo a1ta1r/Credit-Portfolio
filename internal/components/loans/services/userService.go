@@ -34,7 +34,7 @@ func (us UserService) CreateUser(user entities.User) (entities.User, bool) {
 
 	advertisers, _ := us.storageContainer.AdvertiserStorage.GetAdvertisers()
 	for _, a := range advertisers {
-		if a.Username == user.Username || a.Email == user.Email {
+		if a.Email == user.Email {
 			exists = true
 		}
 	}

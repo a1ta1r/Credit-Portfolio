@@ -108,7 +108,7 @@ func (ac AdvertiserController) AddAdvertiser(c *gin.Context) {
 
 	exists := false
 	for _, u := range users {
-		if u.Username == advertiser.Username || u.Email == advertiser.Email {
+		if  u.Email == advertiser.Email {
 			exists = true
 		}
 	}

@@ -66,54 +66,6 @@ func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	return "", errInvalidCredentials
 }
 
-func (w JwtWrapper) adminRoleAuthFunc(c *gin.Context) (interface{}, error) {
-	var users []le.User
-	users = w.userService.GetUsers()
-	var err error = nil
-	var testUser le.User
-	c.BindJSON(&testUser)
-	username := testUser.Username
-	password := testUser.Password
-	for i := 0; i < len(users); i++ {
-		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
-		if username == users[i].Username && users[i].Role == roles.Admin && err == nil {
-			return username, err
-		}
-	}
-	return "", errInvalidCredentials
-}
-
-func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
-	var users []le.User
-	users = w.userService.GetUsers()
-	var testUser le.User
-	c.BindJSON(&testUser)
-	username := testUser.Username
-	password := testUser.Password
-	var err error = nil
-	for i := 0; i < len(users); i++ {
-		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
-		if username == users[i].Username && users[i].Role == roles.Ads && err == nil {
-			return username, err
-		}
-	}
-
-	var advertisers []entities.Advertiser
-	advertisers, _ = w.advStorage.GetAdvertisers()
-	var testAdv entities.Advertiser
-	c.BindJSON(&testAdv)
-	username = testAdv.Username
-	password = testAdv.Password
-	for i := 0; i < len(advertisers); i++ {
-		err = bcrypt.CompareHashAndPassword([]byte(advertisers[i].Password), []byte(password))
-		if username == advertisers[i].Email && advertisers[i].Role == roles.Ads && err == nil {
-			return username, err
-		}
-	}
-
-	return "", errInvalidCredentials
-}
-
 func (w *JwtWrapper) Payload(user interface{}) jwt.MapClaims {
 	id := (user.(map[string]interface{}))["id"]
 	username := (user.(map[string]interface{}))["username"]
