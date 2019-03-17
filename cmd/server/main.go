@@ -62,6 +62,7 @@ func main() {
 	agendaController := loanControllers.NewAgendaController(agendaService)
 	calculationController := loanControllers.NewCalculatorController(&db)
 	advertiserController := adsControllers.NewAdvertiserController(
+		storageContainer.UserStorage,
 		storageContainer.AdvertiserStorage,
 		storageContainer.BannerStorage,
 		storageContainer.BannerPlaceStorage)

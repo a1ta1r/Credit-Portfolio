@@ -121,7 +121,11 @@ func (uc UserController) AddUser(c *gin.Context) {
 	var mailPassword = user.Password
 	user.Password = user.GetHashedPassword()
 	user.LastSeen = time.Now()
-	user = uc.userService.CreateUser(user)
+	user, isOk := uc.userService.CreateUser(user)
+	if !isOk {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": codes.ResourceExists})
+		return
+	}
 	mailer.SendMail(user.Email, user.Username, mailPassword)
 	user = uc.userService.GetUserByUsername(user.Username)
 	c.JSON(http.StatusCreated, user)

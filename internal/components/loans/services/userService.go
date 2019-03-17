@@ -22,11 +22,32 @@ func (us UserService) GetUsers() []entities.User {
 	}
 }
 
-func (us UserService) CreateUser(user entities.User) entities.User {
+func (us UserService) CreateUser(user entities.User) (entities.User, bool) {
+	users, _ := us.storageContainer.UserStorage.GetAll()
+
+	exists := false
+	for _, u := range users {
+		if u.Username == user.Username || u.Email == user.Email {
+			exists = true
+		}
+	}
+
+	advertisers, _ := us.storageContainer.AdvertiserStorage.GetAdvertisers()
+	for _, a := range advertisers {
+		if a.Username == user.Username || a.Email == user.Email {
+			exists = true
+		}
+	}
+
+
+	if exists {
+		return user, false
+	}
+
 	if err := us.storageContainer.UserStorage.Create(user); err != nil {
 		panic(err)
 	} else {
-		return user
+		return user, true
 	}
 }
 

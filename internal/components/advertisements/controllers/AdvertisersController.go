@@ -5,6 +5,7 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/storages"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/errors"
+	storages2 "github.com/a1ta1r/Credit-Portfolio/internal/components/loans/storages"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/roles"
 	"github.com/a1ta1r/Credit-Portfolio/internal/specification/requests"
 	_ "github.com/a1ta1r/Credit-Portfolio/internal/specification/responses"
@@ -15,17 +16,20 @@ import (
 )
 
 type AdvertiserController struct {
+	userStorage        storages2.UserStorage
 	advertiserStorage  storages.AdvertiserStorage
 	bannerStorage      storages.BannerStorage
 	bannerPlaceStorage storages.BannerPlaceStorage
 }
 
 func NewAdvertiserController(
+	userStorage storages2.UserStorage,
 	advertiserStorage storages.AdvertiserStorage,
 	bannerStorage storages.BannerStorage,
 	bannerPlaceStorage storages.BannerPlaceStorage,
 ) AdvertiserController {
 	return AdvertiserController{
+		userStorage:        userStorage,
 		advertiserStorage:  advertiserStorage,
 		bannerStorage:      bannerStorage,
 		bannerPlaceStorage: bannerPlaceStorage,
@@ -99,6 +103,28 @@ func (ac AdvertiserController) AddAdvertiser(c *gin.Context) {
 	advertiser = request.ToAdvertiser()
 	advertiser.Role = roles.Ads
 	advertiser.Password = advertiser.GetHashedPassword()
+
+	users, _ := ac.userStorage.GetAll()
+
+	exists := false
+	for _, u := range users {
+		if u.Username == advertiser.Username || u.Email == advertiser.Email {
+			exists = true
+		}
+	}
+
+	advertisers, _ := ac.advertiserStorage.GetAdvertisers()
+	for _, a := range advertisers {
+		if a.Username == advertiser.Username || a.Email == advertiser.Email {
+			exists = true
+		}
+	}
+
+	if exists {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": codes.ResourceExists})
+		return
+	}
+
 	err := ac.advertiserStorage.CreateAdvertiser(&advertiser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": codes.Unhealthy})
