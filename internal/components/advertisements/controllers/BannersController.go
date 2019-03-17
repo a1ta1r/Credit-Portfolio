@@ -177,3 +177,46 @@ func (bc BannersController) UpdateBanner(c *gin.Context) {
 		"banner": banner,
 	})
 }
+
+func (bc BannersController) IncrViewsForBanner(c *gin.Context) {
+	var banner entities.Banner
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": codes.BadID})
+		return
+	}
+	banner, _ = bc.bannerStorage.GetBanner(uint(id))
+	if banner.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": codes.ResNotFound})
+		return
+	}
+	banner.Views++
+	_ = bc.bannerStorage.UpdateBanner(&banner)
+	banner, err = bc.bannerStorage.GetBanner(banner.ID)
+	c.JSON(http.StatusOK, gin.H{
+		"status": "OK",
+		"banner": banner,
+	})
+}
+
+func (bc BannersController) IncrClicksForBanner(c *gin.Context) {
+	var banner entities.Banner
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": codes.BadID})
+		return
+	}
+	banner, _ = bc.bannerStorage.GetBanner(uint(id))
+	if banner.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": codes.ResNotFound})
+		return
+	}
+	banner.Clicks++
+	_ = bc.bannerStorage.UpdateBanner(&banner)
+	banner, err = bc.bannerStorage.GetBanner(banner.ID)
+	c.JSON(http.StatusOK, gin.H{
+		"status": "OK",
+		"banner": banner,
+	})
+}
+

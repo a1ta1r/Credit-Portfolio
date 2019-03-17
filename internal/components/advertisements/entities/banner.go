@@ -17,6 +17,7 @@ type Banner struct {
 	IsVisible           bool          `json:"isVisible"`
 	Advertisement       Advertisement `json:"-" gorm:"foreignkey:AdvertisementID"`
 	AdvertisementID     uint          `json:"advertisementId"`
+	Clicks              uint          `json:"clicks"`
 }
 
 func (b Banner) GetBannerPrice() float64 {

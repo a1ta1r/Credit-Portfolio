@@ -10,6 +10,8 @@ type UpdateBanner struct {
 	AdvertisementLink   *string `json:"advertisementLink"`
 	BannerPlaceID       *uint   `json:"bannerPlaceId" `
 	IsVisible           *bool   `json:"isVisible"`
+	Views               *uint   `json:"views"`
+	Clicks              *uint   `json:"clicks"`
 }
 
 func (nb UpdateBanner) ToBanner(banner entities.Banner) entities.Banner {
@@ -30,6 +32,12 @@ func (nb UpdateBanner) ToBanner(banner entities.Banner) entities.Banner {
 	}
 	if nb.AdvertisementLink != nil {
 		banner.AdvertisementLink = *nb.AdvertisementLink
+	}
+	if nb.Views != nil {
+		banner.Views = *nb.Views
+	}
+	if nb.Clicks != nil {
+		banner.Clicks = *nb.Clicks
 	}
 	return banner
 }

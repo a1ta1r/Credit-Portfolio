@@ -155,6 +155,8 @@ func main() {
 		banners.DELETE("/:id", bannersController.DeleteBannerByID)
 		banners.PUT("/:id", bannersController.UpdateBanner)
 		banners.POST("", bannersController.AddBanner)
+		banners.PUT("/:id/views", bannersController.IncrViewsForBanner)
+		banners.PUT("/:id/clicks", bannersController.IncrClicksForBanner)
 	}
 
 	bannerPlaces := baseRoute.Group("/banner_places")
