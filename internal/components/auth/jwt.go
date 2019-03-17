@@ -57,7 +57,7 @@ func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	advertisers, _ = w.advStorage.GetAdvertisers()
 	for i := 0; i < len(advertisers); i++ {
 		err = bcrypt.CompareHashAndPassword([]byte(advertisers[i].Password), []byte(password))
-		if username == advertisers[i].Username && advertisers[i].Role == roles.Ads && err == nil {
+		if username == advertisers[i].Email && advertisers[i].Role == roles.Ads && err == nil {
 			role := fmt.Sprint(advertisers[i].Role)
 			return map[string]interface{}{"id": advertisers[i].ID, "username": username, "role": role}, err
 		}
@@ -106,7 +106,7 @@ func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	password = testAdv.Password
 	for i := 0; i < len(advertisers); i++ {
 		err = bcrypt.CompareHashAndPassword([]byte(advertisers[i].Password), []byte(password))
-		if username == advertisers[i].Username && advertisers[i].Role == roles.Ads && err == nil {
+		if username == advertisers[i].Email && advertisers[i].Role == roles.Ads && err == nil {
 			return username, err
 		}
 	}
