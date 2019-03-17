@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/entities"
 	"github.com/a1ta1r/Credit-Portfolio/internal/components/advertisements/storages"
 	le "github.com/a1ta1r/Credit-Portfolio/internal/components/loans/entities"
@@ -25,24 +26,12 @@ func NewJwtWrapper(userService ls.UserService, advStorage storages.AdvertiserSto
 }
 
 func (w JwtWrapper) GetJwtMiddleware(role roles.Role) jwt.GinJWTMiddleware {
-	var authFunc = func(c *gin.Context) (interface{}, error) { return "", nil }
-	switch role {
-	case roles.Basic:
-		authFunc = w.userRoleAuthFunc
-		break
-	case roles.Admin:
-		authFunc = w.adminRoleAuthFunc
-		break
-	case roles.Ads:
-		authFunc = w.merchantRoleAuthFunc
-		break
-	}
 	jwtMiddleware := jwt.GinJWTMiddleware{
 		Realm:         "robreid.io",
 		Key:           []byte("portfolio-on-credit-very-very-very-secret-key"),
 		Timeout:       time.Hour * 24 * 7,
 		MaxRefresh:    time.Hour * 24,
-		Authenticator: authFunc,
+		Authenticator: w.userRoleAuthFunc,
 		PayloadFunc:   w.Payload,
 	}
 	return jwtMiddleware
@@ -59,7 +48,8 @@ func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	for i := 0; i < len(users); i++ {
 		err = bcrypt.CompareHashAndPassword([]byte(users[i].Password), []byte(password))
 		if username == users[i].Username && users[i].Role == roles.Basic && err == nil {
-			return username, err
+			role := fmt.Sprint(users[i].Role)
+			return map[string]interface{}{"id": users[i].ID, "username": username, "role": role}, err
 		}
 	}
 
@@ -68,11 +58,10 @@ func (w JwtWrapper) userRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	for i := 0; i < len(advertisers); i++ {
 		err = bcrypt.CompareHashAndPassword([]byte(advertisers[i].Password), []byte(password))
 		if username == advertisers[i].Username && advertisers[i].Role == roles.Ads && err == nil {
-			return username, err
+			role := fmt.Sprint(advertisers[i].Role)
+			return map[string]interface{}{"id": advertisers[i].ID, "username": username, "role": role}, err
 		}
 	}
-
-	return "", errInvalidCredentials
 
 	return "", errInvalidCredentials
 }
@@ -125,11 +114,13 @@ func (w JwtWrapper) merchantRoleAuthFunc(c *gin.Context) (interface{}, error) {
 	return "", errInvalidCredentials
 }
 
-func (w *JwtWrapper) Payload(username interface{}) jwt.MapClaims {
-	var user = w.userService.GetUserByUsername(username.(string))
+func (w *JwtWrapper) Payload(user interface{}) jwt.MapClaims {
+	id := (user.(map[string]interface{}))["id"]
+	username := (user.(map[string]interface{}))["username"]
+	role := (user.(map[string]interface{}))["role"]
 	return jwt.MapClaims{
-		"username": user.Username,
-		"role":     user.Role,
-		"user_id":  user.ID,
+		"user_id":  id,
+		"username": username,
+		"role":     role,
 	}
 }
