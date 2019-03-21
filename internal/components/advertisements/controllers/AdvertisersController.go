@@ -10,6 +10,7 @@ import (
 	"github.com/a1ta1r/Credit-Portfolio/internal/specification/requests"
 	_ "github.com/a1ta1r/Credit-Portfolio/internal/specification/responses"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/appleboy/gin-jwt.v2"
 	"gopkg.in/go-playground/validator.v8"
 	"net/http"
 	"strconv"
@@ -194,4 +195,22 @@ func (ac AdvertiserController) UpdateAdvertiser(c *gin.Context) {
 		"status":     "OK",
 		"advertiser": advertiser,
 	})
+}
+
+//Писал впопыхах, сори(
+func (ac AdvertiserController) GetAdvertiserByJWT(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	id := int(claims["user_id"].(float64))
+
+	advertiser, err := ac.advertiserStorage.GetAdvertiser(uint(id))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": codes.BadID})
+		return
+	}
+	if advertiser.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": codes.ResNotFound})
+		return
+	}
+	advertiser.Password = ""
+	c.JSON(http.StatusOK, gin.H{"advertiser": advertiser})
 }

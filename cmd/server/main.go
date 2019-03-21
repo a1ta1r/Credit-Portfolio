@@ -125,6 +125,7 @@ func main() {
 		basicAccess.POST("/calculate", calculationController.CalculateCredit)
 
 		basicAccess.GET("/agenda", agendaController.GetAgendaElements)
+		basicAccess.GET("/partner", advertiserController.GetAdvertiserByJWT)
 	}
 
 	//TODO убрать рекламщиков в вип доступ для админа
@@ -136,7 +137,6 @@ func main() {
 		advertisers.PUT("/:id", advertiserController.UpdateAdvertiser)
 		advertisers.DELETE("/:id", advertiserController.DeleteAdvertiser)
 		advertisers.GET("/:id/promotions", advertisementController.GetAdvertisementsByAdvertiser)
-
 	}
 
 	advertisements := baseRoute.Group("/promotions")
