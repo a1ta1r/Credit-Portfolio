@@ -232,7 +232,14 @@ func (bc BannersController) GetRandomBanner(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": codes.ResNotFound})
 		return
 	}
-	banner := banners[bc.rnd.Intn(len(banners))]
+	var activeBanners []entities.Banner
+	for _, b := range banners {
+		if b.IsVisible {
+			activeBanners = append(activeBanners, b)
+		}
+	}
+	banner := activeBanners[bc.rnd.Intn(len(activeBanners))]
+
 	if banner.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"error": codes.ResNotFound})
 		return
